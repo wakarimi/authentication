@@ -13,12 +13,12 @@ type RegisterRequest struct {
 	// Username of the user to be registered.
 	// Required: true
 	// Example: Zalimannard
-	Username string `json:"username" binding:"required"`
+	Username string `json:"username" binding:"required,alphanum,min=3,max=30"`
 
 	// Password of the user to be registered.
 	// Required: true
 	// Example: querty01
-	Password string `json:"password" binding:"required"`
+	Password string `json:"password" binding:"required,alphanum,min=8,max=50"`
 }
 
 // Error represents a standard application error.

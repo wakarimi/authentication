@@ -85,11 +85,15 @@ const docTemplate = `{
             "properties": {
                 "password": {
                     "description": "Password of the user to be registered.\nRequired: true\nExample: querty01",
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 50,
+                    "minLength": 8
                 },
                 "username": {
                     "description": "Username of the user to be registered.\nRequired: true\nExample: Zalimannard",
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 30,
+                    "minLength": 3
                 }
             }
         }

@@ -17,12 +17,16 @@ definitions:
           Password of the user to be registered.
           Required: true
           Example: querty01
+        maxLength: 50
+        minLength: 8
         type: string
       username:
         description: |-
           Username of the user to be registered.
           Required: true
           Example: Zalimannard
+        maxLength: 30
+        minLength: 3
         type: string
     required:
     - password
