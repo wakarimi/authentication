@@ -1,0 +1,8 @@
+version: "3"
+
+services:
+  usuf-bot:
+    container_name: wakarimi-authentication
+    build:
+      context: .
+    image: wakarimi-authentication
