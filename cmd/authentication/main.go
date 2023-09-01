@@ -19,6 +19,7 @@ func main() {
 		log.Fatal("Failed to connect to the database: %v", err)
 	}
 	defer db.Close()
+	database.SetDatabase(db)
 
 	err = database.RunMigrations(db, "./internal/database/migrations")
 	if err != nil {

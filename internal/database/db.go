@@ -1,15 +1,21 @@
 package database
 
 import (
-	"database/sql"
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
+	"github.com/jmoiron/sqlx"
 	"log"
 )
 
-func ConnectDb(connectionString string) (*sql.DB, error) {
-	db, err := sql.Open("postgres", connectionString)
+var Db *sqlx.DB
+
+func SetDatabase(db *sqlx.DB) {
+	Db = db
+}
+
+func ConnectDb(connectionString string) (*sqlx.DB, error) {
+	db, err := sqlx.Connect("postgres", connectionString)
 	if err != nil {
 		return nil, err
 	}
@@ -21,8 +27,8 @@ func ConnectDb(connectionString string) (*sql.DB, error) {
 	return db, nil
 }
 
-func RunMigrations(db *sql.DB, migrationsPath string) error {
-	driver, err := postgres.WithInstance(db, &postgres.Config{})
+func RunMigrations(db *sqlx.DB, migrationsPath string) error {
+	driver, err := postgres.WithInstance(db.DB, &postgres.Config{})
 	if err != nil {
 		return err
 	}
