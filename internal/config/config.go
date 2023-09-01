@@ -7,10 +7,15 @@ import (
 
 type Configuration struct {
 	DatabaseConfiguration
+	HttpServerConfiguration
 }
 
 type DatabaseConfiguration struct {
 	DatabaseConnectionString string
+}
+
+type HttpServerConfiguration struct {
+	Port string
 }
 
 func LoadConfiguration() (config *Configuration, err error) {
@@ -20,6 +25,9 @@ func LoadConfiguration() (config *Configuration, err error) {
 	config = &Configuration{
 		DatabaseConfiguration{
 			DatabaseConnectionString: viper.GetString("WAKARIMI_AUTHENTICATION_DB_STRING"),
+		},
+		HttpServerConfiguration{
+			Port: viper.GetString("HTTP_SERVER_PORT"),
 		},
 	}
 

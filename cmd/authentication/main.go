@@ -1,6 +1,7 @@
 package main
 
 import (
+	"authentication/api"
 	"authentication/internal/config"
 	"authentication/internal/database"
 	"log"
@@ -13,7 +14,7 @@ func main() {
 	}
 
 	log.Println(cfg.DatabaseConnectionString)
-	db, err := database.ConnectDb(cfg.DatabaseConfiguration.DatabaseConnectionString)
+	db, err := database.ConnectDb(cfg.DatabaseConnectionString)
 	if err != nil {
 		log.Fatal("Failed to connect to the database: %v", err)
 	}
@@ -23,4 +24,7 @@ func main() {
 	if err != nil {
 		log.Fatal("Failed to run migrations: %v", err)
 	}
+
+	r := api.SetupRouter()
+	r.Run(":" + cfg.Port)
 }
