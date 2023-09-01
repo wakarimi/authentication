@@ -1,0 +1,69 @@
+basePath: /api
+definitions:
+  handlers.Error:
+    properties:
+      error:
+        description: |-
+          The error message.
+          Example: User already exists
+        type: string
+    required:
+    - error
+    type: object
+  handlers.RegisterRequest:
+    properties:
+      password:
+        description: |-
+          Password of the user to be registered.
+          Required: true
+          Example: querty01
+        type: string
+      username:
+        description: |-
+          Username of the user to be registered.
+          Required: true
+          Example: Zalimannard
+        type: string
+    required:
+    - password
+    - username
+    type: object
+host: localhost:8020
+info:
+  contact:
+    email: zalimannard@mail.ru
+    name: Zalimannard
+  description: This is the authentication service for Wakarimi.
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  title: Wakarimi Authentication API
+  version: "0.0"
+paths:
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user with the input payload
+      parameters:
+      - description: Register payload
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Ok.
+        "400":
+          description: Error.
+          schema:
+            $ref: '#/definitions/handlers.Error'
+        "500":
+          description: Error.
+          schema:
+            $ref: '#/definitions/handlers.Error'
+      summary: Register a new user
+swagger: "2.0"

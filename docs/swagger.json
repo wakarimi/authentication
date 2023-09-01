@@ -1,0 +1,91 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is the authentication service for Wakarimi.",
+        "title": "Wakarimi Authentication API",
+        "contact": {
+            "name": "Zalimannard",
+            "email": "zalimannard@mail.ru"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        },
+        "version": "0.0"
+    },
+    "host": "localhost:8020",
+    "basePath": "/api",
+    "paths": {
+        "/register": {
+            "post": {
+                "description": "Register a new user with the input payload",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Register a new user",
+                "parameters": [
+                    {
+                        "description": "Register payload",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handlers.RegisterRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Ok."
+                    },
+                    "400": {
+                        "description": "Error.",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Error.",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.Error"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "handlers.Error": {
+            "type": "object",
+            "required": [
+                "error"
+            ],
+            "properties": {
+                "error": {
+                    "description": "The error message.\nExample: User already exists",
+                    "type": "string"
+                }
+            }
+        },
+        "handlers.RegisterRequest": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "description": "Password of the user to be registered.\nRequired: true\nExample: querty01",
+                    "type": "string"
+                },
+                "username": {
+                    "description": "Username of the user to be registered.\nRequired: true\nExample: Zalimannard",
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

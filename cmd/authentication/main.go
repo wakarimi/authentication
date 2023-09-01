@@ -2,11 +2,21 @@ package main
 
 import (
 	"authentication/api"
+	_ "authentication/docs"
 	"authentication/internal/config"
 	"authentication/internal/database"
 	"log"
 )
 
+// @title Wakarimi Authentication API
+// @version 0.0
+// @description This is the authentication service for Wakarimi.
+// @contact.name Zalimannard
+// @contact.email zalimannard@mail.ru
+// @license.name MIT
+// @license.url https://opensource.org/licenses/MIT
+// @host localhost:8020
+// @BasePath /api
 func main() {
 	cfg, err := config.LoadConfiguration()
 	if err != nil {
