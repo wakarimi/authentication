@@ -21,8 +21,8 @@ func UserExist(username string) (bool, error) {
 
 func CreateUser(user models.User) error {
 	query := `
-		INSERT INTO users (username, hashed_password)
-		VALUES (:username, :hashed_password)
+		INSERT INTO users (username, hashed_password, role)
+		VALUES (:username, :hashed_password, :role)
 	`
 	_, err := database.Db.NamedExec(query, user)
 	return err

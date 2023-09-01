@@ -1,16 +1,28 @@
 basePath: /api
 definitions:
-  handlers.Error:
+  handlers.RegisterMicroserviceRequest:
     properties:
-      error:
+      password:
         description: |-
-          The error message.
-          Example: User already exists
+          Password of the user to be registered.
+          Required: true
+          Example: astoyuzcnvoiaersparsarstaoeizxcnvarst
+        maxLength: 50
+        minLength: 8
+        type: string
+      username:
+        description: |-
+          Username of the user to be registered.
+          Required: true
+          Example: Music
+        maxLength: 30
+        minLength: 3
         type: string
     required:
-    - error
+    - password
+    - username
     type: object
-  handlers.RegisterRequest:
+  handlers.RegisterUserRequest:
     properties:
       password:
         description: |-
@@ -32,6 +44,16 @@ definitions:
     - password
     - username
     type: object
+  types.Error:
+    properties:
+      error:
+        description: |-
+          The error message.
+          Example: User already exists
+        type: string
+    required:
+    - error
+    type: object
 host: localhost:8020
 info:
   contact:
@@ -44,7 +66,37 @@ info:
   title: Wakarimi Authentication API
   version: "0.0"
 paths:
-  /register:
+  /register/microservice:
+    post:
+      consumes:
+      - application/json
+      description: Register a new microservice with the input payload
+      parameters:
+      - description: Register payload
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.RegisterMicroserviceRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Ok.
+        "400":
+          description: Error.
+          schema:
+            $ref: '#/definitions/types.Error'
+        "403":
+          description: Error.
+          schema:
+            $ref: '#/definitions/types.Error'
+        "500":
+          description: Error.
+          schema:
+            $ref: '#/definitions/types.Error'
+      summary: Register a new microservice
+  /register/user:
     post:
       consumes:
       - application/json
@@ -55,7 +107,7 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/handlers.RegisterRequest'
+          $ref: '#/definitions/handlers.RegisterUserRequest'
       produces:
       - application/json
       responses:
@@ -64,10 +116,10 @@ paths:
         "400":
           description: Error.
           schema:
-            $ref: '#/definitions/handlers.Error'
+            $ref: '#/definitions/types.Error'
         "500":
           description: Error.
           schema:
-            $ref: '#/definitions/handlers.Error'
+            $ref: '#/definitions/types.Error'
       summary: Register a new user
 swagger: "2.0"

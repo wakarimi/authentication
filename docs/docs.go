@@ -22,7 +22,53 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/register": {
+        "/register/microservice": {
+            "post": {
+                "description": "Register a new microservice with the input payload",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Register a new microservice",
+                "parameters": [
+                    {
+                        "description": "Register payload",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handlers.RegisterMicroserviceRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Ok."
+                    },
+                    "400": {
+                        "description": "Error.",
+                        "schema": {
+                            "$ref": "#/definitions/types.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "Error.",
+                        "schema": {
+                            "$ref": "#/definitions/types.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Error.",
+                        "schema": {
+                            "$ref": "#/definitions/types.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/register/user": {
             "post": {
                 "description": "Register a new user with the input payload",
                 "consumes": [
@@ -39,7 +85,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handlers.RegisterRequest"
+                            "$ref": "#/definitions/handlers.RegisterUserRequest"
                         }
                     }
                 ],
@@ -50,13 +96,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Error.",
                         "schema": {
-                            "$ref": "#/definitions/handlers.Error"
+                            "$ref": "#/definitions/types.Error"
                         }
                     },
                     "500": {
                         "description": "Error.",
                         "schema": {
-                            "$ref": "#/definitions/handlers.Error"
+                            "$ref": "#/definitions/types.Error"
                         }
                     }
                 }
@@ -64,19 +110,28 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "handlers.Error": {
+        "handlers.RegisterMicroserviceRequest": {
             "type": "object",
             "required": [
-                "error"
+                "password",
+                "username"
             ],
             "properties": {
-                "error": {
-                    "description": "The error message.\nExample: User already exists",
-                    "type": "string"
+                "password": {
+                    "description": "Password of the user to be registered.\nRequired: true\nExample: astoyuzcnvoiaersparsarstaoeizxcnvarst",
+                    "type": "string",
+                    "maxLength": 50,
+                    "minLength": 8
+                },
+                "username": {
+                    "description": "Username of the user to be registered.\nRequired: true\nExample: Music",
+                    "type": "string",
+                    "maxLength": 30,
+                    "minLength": 3
                 }
             }
         },
-        "handlers.RegisterRequest": {
+        "handlers.RegisterUserRequest": {
             "type": "object",
             "required": [
                 "password",
@@ -94,6 +149,18 @@ const docTemplate = `{
                     "type": "string",
                     "maxLength": 30,
                     "minLength": 3
+                }
+            }
+        },
+        "types.Error": {
+            "type": "object",
+            "required": [
+                "error"
+            ],
+            "properties": {
+                "error": {
+                    "description": "The error message.\nExample: User already exists",
+                    "type": "string"
                 }
             }
         }
