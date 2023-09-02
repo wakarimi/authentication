@@ -11,10 +11,10 @@
             "name": "MIT",
             "url": "https://opensource.org/licenses/MIT"
         },
-        "version": "0.0"
+        "version": "0.1"
     },
     "host": "localhost:8020",
-    "basePath": "/api",
+    "basePath": "/api/auth-service",
     "paths": {
         "/login": {
             "post": {

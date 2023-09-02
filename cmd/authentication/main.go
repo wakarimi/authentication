@@ -9,14 +9,14 @@ import (
 )
 
 // @title Wakarimi Authentication API
-// @version 0.0
+// @version 0.1
 // @description This is the authentication service for Wakarimi.
 // @contact.name Zalimannard
 // @contact.email zalimannard@mail.ru
 // @license.name MIT
 // @license.url https://opensource.org/licenses/MIT
 // @host localhost:8020
-// @BasePath /api
+// @BasePath /api/auth-service
 func main() {
 	cfg, err := config.LoadConfiguration()
 	if err != nil {
