@@ -9,6 +9,7 @@ import (
 type Configuration struct {
 	DatabaseConfiguration
 	HttpServerConfiguration
+	JwtConfiguration
 }
 
 type DatabaseConfiguration struct {
@@ -18,6 +19,11 @@ type DatabaseConfiguration struct {
 type HttpServerConfiguration struct {
 	Port             string
 	MicroservicesIps []string
+}
+
+type JwtConfiguration struct {
+	RefreshSecretKey string
+	AccessSecretKey  string
 }
 
 func LoadConfiguration() (config *Configuration, err error) {
@@ -32,6 +38,10 @@ func LoadConfiguration() (config *Configuration, err error) {
 		HttpServerConfiguration{
 			Port:             viper.GetString("HTTP_SERVER_PORT"),
 			MicroservicesIps: append(localIps, parseIp4s(viper.GetString("ALLOWED_IP4"))...),
+		},
+		JwtConfiguration{
+			RefreshSecretKey: viper.GetString("REFRESH_SECRET_KEY"),
+			AccessSecretKey:  viper.GetString("ACCESS_SECRET_KEY"),
 		},
 	}
 
