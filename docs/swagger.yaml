@@ -1,0 +1,286 @@
+basePath: /api/auth-service
+definitions:
+  handlers.LoginRequest:
+    properties:
+      password:
+        description: |-
+          Password of the account to be login.
+          Required: true
+          Example: qwerty01
+        maxLength: 50
+        minLength: 8
+        type: string
+      username:
+        description: |-
+          Username of the account to be login.
+          Required: true
+          Example: Zalimannard
+        maxLength: 30
+        minLength: 3
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  handlers.LoginResponse:
+    properties:
+      accessToken:
+        description: |-
+          AccessToken used to authenticate subsequent requests.
+          Required: true
+          Example: aaaaa.bbbbb.ccccc
+        type: string
+      refreshToken:
+        description: |-
+          RefreshToken used to renew the access token.
+          Required: true
+          Example: aaaaa.bbbbb.ccccc
+        type: string
+    required:
+    - accessToken
+    - refreshToken
+    type: object
+  handlers.RefreshRequest:
+    properties:
+      refreshToken:
+        description: |-
+          RefreshToken used to refresh the access token.
+          Required: true
+          Example: aaaaa.bbbbb.ccccc
+        type: string
+    required:
+    - refreshToken
+    type: object
+  handlers.RefreshResponse:
+    properties:
+      accessToken:
+        description: |-
+          AccessToken used to authenticate subsequent requests.
+          Required: true
+          Example: aaaaa.bbbbb.ccccc
+        type: string
+      refreshToken:
+        description: |-
+          RefreshToken used to renew the access token. This may be omitted if not needed.
+          Example: aaaaa.bbbbb.ccccc
+        type: string
+    required:
+    - accessToken
+    type: object
+  handlers.RegisterAccountRequest:
+    properties:
+      password:
+        description: |-
+          Password of the account to be registered.
+          Required: true
+          Example: qwerty01
+        maxLength: 50
+        minLength: 8
+        type: string
+      username:
+        description: |-
+          Username of the account to be registered.
+          Required: true
+          Example: Zalimannard
+        maxLength: 30
+        minLength: 3
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  handlers.ValidateTokenRequest:
+    properties:
+      token:
+        description: |-
+          Token represents the access token to be validated.
+          Required: true
+          Example: aaaaa.bbbbb.ccccc
+        type: string
+    required:
+    - token
+    type: object
+  handlers.ValidateTokenResponse:
+    properties:
+      error:
+        description: |-
+          Error contains any potential error messages during validation.
+          Example: Invalid request body.
+        type: string
+      payload:
+        allOf:
+        - $ref: '#/definitions/types.TokenPayload'
+        description: Payload contains the decoded claims from the token.
+      valid:
+        description: |-
+          Valid indicates whether the token is valid or not.
+          Required: true
+        type: boolean
+    type: object
+  types.Error:
+    properties:
+      error:
+        description: |-
+          The error message.
+          Example: User already exists
+        type: string
+    required:
+    - error
+    type: object
+  types.TokenPayload:
+    properties:
+      account_id:
+        description: |-
+          AccountID represents the ID of the associated account.
+          Required: true
+          Example: 12345
+        type: integer
+      expiry_at:
+        description: |-
+          ExpiryAt represents the UNIX timestamp when the token will expire.
+          Required: true
+          Example: 1615569457
+        type: integer
+      type:
+        description: |-
+          Type indicates the type of the token (e.g., "access" or "refresh").
+          Required: true
+          Example: "access"
+        type: string
+    type: object
+host: localhost:8020
+info:
+  contact:
+    email: zalimannard@mail.ru
+    name: Zalimannard
+  description: This is the authentication service for Wakarimi.
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  title: Wakarimi Authentication API
+  version: "0.1"
+paths:
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Login into account with the input payload.
+      parameters:
+      - description: Login payload
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Ok.
+          schema:
+            $ref: '#/definitions/handlers.LoginResponse'
+        "400":
+          description: Error.
+          schema:
+            $ref: '#/definitions/types.Error'
+        "401":
+          description: Error.
+          schema:
+            $ref: '#/definitions/types.Error'
+        "500":
+          description: Error.
+          schema:
+            $ref: '#/definitions/types.Error'
+      summary: Login into account
+  /refresh:
+    post:
+      consumes:
+      - application/json
+      description: Refresh access token using refresh token.
+      parameters:
+      - description: Refresh token payload
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.RefreshRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Ok.
+          schema:
+            $ref: '#/definitions/handlers.RefreshResponse'
+        "400":
+          description: Error.
+          schema:
+            $ref: '#/definitions/types.Error'
+        "401":
+          description: Error.
+          schema:
+            $ref: '#/definitions/types.Error'
+        "500":
+          description: Error.
+          schema:
+            $ref: '#/definitions/types.Error'
+      summary: Refresh access token
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new account with the input payload. The first registered
+        account will automatically be assigned the ADMIN role.
+      parameters:
+      - description: Register payload
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.RegisterAccountRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Ok.
+        "400":
+          description: Error.
+          schema:
+            $ref: '#/definitions/types.Error'
+        "500":
+          description: Error.
+          schema:
+            $ref: '#/definitions/types.Error'
+      summary: Register a new account
+  /validate:
+    post:
+      consumes:
+      - application/json
+      description: Check if the provided access token is valid.
+      parameters:
+      - description: Token payload
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.ValidateTokenRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Ok.
+          schema:
+            $ref: '#/definitions/handlers.ValidateTokenResponse'
+        "400":
+          description: Error.
+          schema:
+            $ref: '#/definitions/types.Error'
+        "401":
+          description: Error.
+          schema:
+            $ref: '#/definitions/types.Error'
+        "500":
+          description: Error.
+          schema:
+            $ref: '#/definitions/types.Error'
+      summary: Validate access token
+swagger: "2.0"

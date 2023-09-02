@@ -1,0 +1,8 @@
+version: "3"
+
+services:
+  wakarimi-authentication:
+    container_name: wakarimi-authentication
+    build:
+      context: .
+    image: wakarimi-authentication

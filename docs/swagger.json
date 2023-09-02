@@ -1,0 +1,358 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is the authentication service for Wakarimi.",
+        "title": "Wakarimi Authentication API",
+        "contact": {
+            "name": "Zalimannard",
+            "email": "zalimannard@mail.ru"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        },
+        "version": "0.1"
+    },
+    "host": "localhost:8020",
+    "basePath": "/api/auth-service",
+    "paths": {
+        "/login": {
+            "post": {
+                "description": "Login into account with the input payload.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Login into account",
+                "parameters": [
+                    {
+                        "description": "Login payload",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handlers.LoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok.",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.LoginResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error.",
+                        "schema": {
+                            "$ref": "#/definitions/types.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Error.",
+                        "schema": {
+                            "$ref": "#/definitions/types.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Error.",
+                        "schema": {
+                            "$ref": "#/definitions/types.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/refresh": {
+            "post": {
+                "description": "Refresh access token using refresh token.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Refresh access token",
+                "parameters": [
+                    {
+                        "description": "Refresh token payload",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handlers.RefreshRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok.",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.RefreshResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error.",
+                        "schema": {
+                            "$ref": "#/definitions/types.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Error.",
+                        "schema": {
+                            "$ref": "#/definitions/types.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Error.",
+                        "schema": {
+                            "$ref": "#/definitions/types.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/register": {
+            "post": {
+                "description": "Register a new account with the input payload. The first registered account will automatically be assigned the ADMIN role.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Register a new account",
+                "parameters": [
+                    {
+                        "description": "Register payload",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handlers.RegisterAccountRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Ok."
+                    },
+                    "400": {
+                        "description": "Error.",
+                        "schema": {
+                            "$ref": "#/definitions/types.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Error.",
+                        "schema": {
+                            "$ref": "#/definitions/types.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/validate": {
+            "post": {
+                "description": "Check if the provided access token is valid.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Validate access token",
+                "parameters": [
+                    {
+                        "description": "Token payload",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handlers.ValidateTokenRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok.",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.ValidateTokenResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error.",
+                        "schema": {
+                            "$ref": "#/definitions/types.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Error.",
+                        "schema": {
+                            "$ref": "#/definitions/types.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Error.",
+                        "schema": {
+                            "$ref": "#/definitions/types.Error"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "handlers.LoginRequest": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "description": "Password of the account to be login.\nRequired: true\nExample: qwerty01",
+                    "type": "string",
+                    "maxLength": 50,
+                    "minLength": 8
+                },
+                "username": {
+                    "description": "Username of the account to be login.\nRequired: true\nExample: Zalimannard",
+                    "type": "string",
+                    "maxLength": 30,
+                    "minLength": 3
+                }
+            }
+        },
+        "handlers.LoginResponse": {
+            "type": "object",
+            "required": [
+                "accessToken",
+                "refreshToken"
+            ],
+            "properties": {
+                "accessToken": {
+                    "description": "AccessToken used to authenticate subsequent requests.\nRequired: true\nExample: aaaaa.bbbbb.ccccc",
+                    "type": "string"
+                },
+                "refreshToken": {
+                    "description": "RefreshToken used to renew the access token.\nRequired: true\nExample: aaaaa.bbbbb.ccccc",
+                    "type": "string"
+                }
+            }
+        },
+        "handlers.RefreshRequest": {
+            "type": "object",
+            "required": [
+                "refreshToken"
+            ],
+            "properties": {
+                "refreshToken": {
+                    "description": "RefreshToken used to refresh the access token.\nRequired: true\nExample: aaaaa.bbbbb.ccccc",
+                    "type": "string"
+                }
+            }
+        },
+        "handlers.RefreshResponse": {
+            "type": "object",
+            "required": [
+                "accessToken"
+            ],
+            "properties": {
+                "accessToken": {
+                    "description": "AccessToken used to authenticate subsequent requests.\nRequired: true\nExample: aaaaa.bbbbb.ccccc",
+                    "type": "string"
+                },
+                "refreshToken": {
+                    "description": "RefreshToken used to renew the access token. This may be omitted if not needed.\nExample: aaaaa.bbbbb.ccccc",
+                    "type": "string"
+                }
+            }
+        },
+        "handlers.RegisterAccountRequest": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "description": "Password of the account to be registered.\nRequired: true\nExample: qwerty01",
+                    "type": "string",
+                    "maxLength": 50,
+                    "minLength": 8
+                },
+                "username": {
+                    "description": "Username of the account to be registered.\nRequired: true\nExample: Zalimannard",
+                    "type": "string",
+                    "maxLength": 30,
+                    "minLength": 3
+                }
+            }
+        },
+        "handlers.ValidateTokenRequest": {
+            "type": "object",
+            "required": [
+                "token"
+            ],
+            "properties": {
+                "token": {
+                    "description": "Token represents the access token to be validated.\nRequired: true\nExample: aaaaa.bbbbb.ccccc",
+                    "type": "string"
+                }
+            }
+        },
+        "handlers.ValidateTokenResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "description": "Error contains any potential error messages during validation.\nExample: Invalid request body.",
+                    "type": "string"
+                },
+                "payload": {
+                    "description": "Payload contains the decoded claims from the token.",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/types.TokenPayload"
+                        }
+                    ]
+                },
+                "valid": {
+                    "description": "Valid indicates whether the token is valid or not.\nRequired: true",
+                    "type": "boolean"
+                }
+            }
+        },
+        "types.Error": {
+            "type": "object",
+            "required": [
+                "error"
+            ],
+            "properties": {
+                "error": {
+                    "description": "The error message.\nExample: User already exists",
+                    "type": "string"
+                }
+            }
+        },
+        "types.TokenPayload": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "description": "AccountID represents the ID of the associated account.\nRequired: true\nExample: 12345",
+                    "type": "integer"
+                },
+                "expiry_at": {
+                    "description": "ExpiryAt represents the UNIX timestamp when the token will expire.\nRequired: true\nExample: 1615569457",
+                    "type": "integer"
+                },
+                "type": {
+                    "description": "Type indicates the type of the token (e.g., \"access\" or \"refresh\").\nRequired: true\nExample: \"access\"",
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
