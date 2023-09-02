@@ -15,21 +15,21 @@ const (
 	RefreshTokenType      = "refresh"
 )
 
-func GenerateTokens(cfg *config.Configuration, accountId int) (string, string, error) {
-	accessToken, err := generateToken(cfg.AccessSecretKey, accountId, AccessTokenDuration, AccessTokenType)
+func GenerateTokens(cfg *config.Configuration, accountId int) (refreshToken string, accessToken string, err error) {
+	refreshToken, err = generateToken(cfg.RefreshSecretKey, accountId, RefreshTokenDuration, RefreshTokenType)
 	if err != nil {
 		return "", "", err
 	}
 
-	refreshToken, err := generateToken(cfg.RefreshSecretKey, accountId, RefreshTokenDuration, RefreshTokenType)
+	accessToken, err = generateToken(cfg.AccessSecretKey, accountId, AccessTokenDuration, AccessTokenType)
 	if err != nil {
 		return "", "", err
 	}
 
-	return accessToken, refreshToken, nil
+	return refreshToken, accessToken, nil
 }
 
-func RefreshTokens(cfg *config.Configuration, refreshToken string) (string, string, error) {
+func RefreshTokens(cfg *config.Configuration, refreshToken string) (newRefreshToken string, accessToken string, err error) {
 	token, err := validateToken(cfg, refreshToken, RefreshTokenType)
 	if err != nil {
 		return "", "", err
@@ -38,20 +38,20 @@ func RefreshTokens(cfg *config.Configuration, refreshToken string) (string, stri
 	claims := token.Claims.(jwt.MapClaims)
 	accountId := claims["account_id"].(int)
 
-	accessToken, err := generateToken(cfg.AccessSecretKey, accountId, AccessTokenDuration, AccessTokenType)
+	accessToken, err = generateToken(cfg.AccessSecretKey, accountId, AccessTokenDuration, AccessTokenType)
 	if err != nil {
 		return "", "", err
 	}
 
 	if time.Unix(claims["expiry_at"].(int64), 0).Sub(time.Now()) < RefreshTokenThreshold {
-		newRefreshToken, err := generateToken(cfg.RefreshSecretKey, accountId, RefreshTokenDuration, RefreshTokenType)
+		newRefreshToken, err = generateToken(cfg.RefreshSecretKey, accountId, RefreshTokenDuration, RefreshTokenType)
 		if err != nil {
 			return "", "", err
 		}
 		return accessToken, newRefreshToken, nil
 	}
 
-	return accessToken, "", nil
+	return "", accessToken, nil
 }
 
 func ValidateToken(cfg *config.Configuration, tokenString string, tokenType string) (*jwt.Token, error) {

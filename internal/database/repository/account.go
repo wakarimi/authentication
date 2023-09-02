@@ -23,6 +23,22 @@ func AccountExist(username string) (bool, error) {
 	return count > 0, nil
 }
 
+func FetchAccountByUsername(username string) (models.Account, error) {
+	var account models.Account
+
+	query := `
+		SELECT account_id, username, hashed_password, created_at, last_login
+		FROM accounts
+		WHERE username = $1
+	`
+	err := database.Db.Get(&account, query, username)
+	if err != nil {
+		return models.Account{}, err
+	}
+
+	return account, nil
+}
+
 func CreateAccountTx(tx *sqlx.Tx, account models.Account) (int, error) {
 	var accountId int
 

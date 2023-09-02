@@ -15,6 +15,7 @@ func SetupRouter(cfg *config.Configuration) *gin.Engine {
 	{
 		api.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 		api.POST("/register", handlers.Register)
+		api.POST("/login", func(c *gin.Context) { handlers.Login(c, cfg) })
 	}
 
 	return r
