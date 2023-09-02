@@ -22,16 +22,16 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/register/user": {
+        "/register": {
             "post": {
-                "description": "Register a new user with the input payload",
+                "description": "Register a new account with the input payload. The first registered account will automatically be assigned the ADMIN role.",
                 "consumes": [
                     "application/json"
                 ],
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Register a new user",
+                "summary": "Register a new account",
                 "parameters": [
                     {
                         "description": "Register payload",
@@ -39,7 +39,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handlers.RegisterUserRequest"
+                            "$ref": "#/definitions/handlers.RegisterAccountRequest"
                         }
                     }
                 ],
@@ -64,7 +64,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "handlers.RegisterUserRequest": {
+        "handlers.RegisterAccountRequest": {
             "type": "object",
             "required": [
                 "password",
@@ -72,13 +72,13 @@ const docTemplate = `{
             ],
             "properties": {
                 "password": {
-                    "description": "Password of the user to be registered.\nRequired: true\nExample: querty01",
+                    "description": "Password of the account to be registered.\nRequired: true\nExample: qwerty01",
                     "type": "string",
                     "maxLength": 50,
                     "minLength": 8
                 },
                 "username": {
-                    "description": "Username of the user to be registered.\nRequired: true\nExample: Zalimannard",
+                    "description": "Username of the account to be registered.\nRequired: true\nExample: Zalimannard",
                     "type": "string",
                     "maxLength": 30,
                     "minLength": 3

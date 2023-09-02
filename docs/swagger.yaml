@@ -1,18 +1,18 @@
 basePath: /api
 definitions:
-  handlers.RegisterUserRequest:
+  handlers.RegisterAccountRequest:
     properties:
       password:
         description: |-
-          Password of the user to be registered.
+          Password of the account to be registered.
           Required: true
-          Example: querty01
+          Example: qwerty01
         maxLength: 50
         minLength: 8
         type: string
       username:
         description: |-
-          Username of the user to be registered.
+          Username of the account to be registered.
           Required: true
           Example: Zalimannard
         maxLength: 30
@@ -44,18 +44,19 @@ info:
   title: Wakarimi Authentication API
   version: "0.0"
 paths:
-  /register/user:
+  /register:
     post:
       consumes:
       - application/json
-      description: Register a new user with the input payload
+      description: Register a new account with the input payload. The first registered
+        account will automatically be assigned the ADMIN role.
       parameters:
       - description: Register payload
         in: body
         name: input
         required: true
         schema:
-          $ref: '#/definitions/handlers.RegisterUserRequest'
+          $ref: '#/definitions/handlers.RegisterAccountRequest'
       produces:
       - application/json
       responses:
@@ -69,5 +70,5 @@ paths:
           description: Error.
           schema:
             $ref: '#/definitions/types.Error'
-      summary: Register a new user
+      summary: Register a new account
 swagger: "2.0"
