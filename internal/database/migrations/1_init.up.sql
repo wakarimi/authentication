@@ -14,12 +14,3 @@ CREATE TABLE "account_roles"(
     PRIMARY KEY ("account_id", "role"),
     FOREIGN KEY ("account_id") REFERENCES "accounts"("account_id")
 );
-
-CREATE TABLE "tokens"(
-    "token_id" SERIAL PRIMARY KEY,
-    "account_id" INTEGER NOT NULL,
-    "type" VARCHAR(255) CHECK ("type" IN('ACCESS', 'REFRESH')) NOT NULL,
-    "value" TEXT NOT NULL,
-    "expiry_at" TIMESTAMPTZ NOT NULL,
-    FOREIGN KEY ("account_id") REFERENCES "accounts"("account_id")
-);
