@@ -160,7 +160,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/validate-token": {
+        "/validate": {
             "post": {
                 "description": "Check if the provided access token is valid.",
                 "consumes": [

@@ -39,7 +39,7 @@ type ValidateTokenResponse struct {
 // @Param input body ValidateTokenRequest true "Token payload"
 // @Success 200 {object} ValidateTokenResponse "Ok."
 // @Failure 400,401,500 {object} types.Error "Error."
-// @Router /validate-token [post]
+// @Router /validate [post]
 func ValidateToken(c *gin.Context, cfg *config.Configuration) {
 	var request ValidateTokenRequest
 

@@ -251,7 +251,7 @@ paths:
           schema:
             $ref: '#/definitions/types.Error'
       summary: Register a new account
-  /validate-token:
+  /validate:
     post:
       consumes:
       - application/json
