@@ -153,6 +153,55 @@
                     }
                 }
             }
+        },
+        "/validate-token": {
+            "post": {
+                "description": "Check if the provided access token is valid.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Validate access token",
+                "parameters": [
+                    {
+                        "description": "Token payload",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handlers.ValidateTokenRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok.",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.ValidateTokenResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error.",
+                        "schema": {
+                            "$ref": "#/definitions/types.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Error.",
+                        "schema": {
+                            "$ref": "#/definitions/types.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Error.",
+                        "schema": {
+                            "$ref": "#/definitions/types.Error"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -201,7 +250,7 @@
             ],
             "properties": {
                 "refreshToken": {
-                    "description": "Token used to refresh the access token.\nRequired: true\nExample: aaaaa.bbbbb.ccccc",
+                    "description": "RefreshToken used to refresh the access token.\nRequired: true\nExample: aaaaa.bbbbb.ccccc",
                     "type": "string"
                 }
             }
@@ -243,6 +292,39 @@
                 }
             }
         },
+        "handlers.ValidateTokenRequest": {
+            "type": "object",
+            "required": [
+                "token"
+            ],
+            "properties": {
+                "token": {
+                    "description": "Token represents the access token to be validated.\nRequired: true\nExample: aaaaa.bbbbb.ccccc",
+                    "type": "string"
+                }
+            }
+        },
+        "handlers.ValidateTokenResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "description": "Error contains any potential error messages during validation.\nExample: Invalid request body.",
+                    "type": "string"
+                },
+                "payload": {
+                    "description": "Payload contains the decoded claims from the token.",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/types.TokenPayload"
+                        }
+                    ]
+                },
+                "valid": {
+                    "description": "Valid indicates whether the token is valid or not.\nRequired: true",
+                    "type": "boolean"
+                }
+            }
+        },
         "types.Error": {
             "type": "object",
             "required": [
@@ -251,6 +333,23 @@
             "properties": {
                 "error": {
                     "description": "The error message.\nExample: User already exists",
+                    "type": "string"
+                }
+            }
+        },
+        "types.TokenPayload": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "description": "AccountID represents the ID of the associated account.\nRequired: true\nExample: 12345",
+                    "type": "integer"
+                },
+                "expiry_at": {
+                    "description": "ExpiryAt represents the UNIX timestamp when the token will expire.\nRequired: true\nExample: 1615569457",
+                    "type": "integer"
+                },
+                "type": {
+                    "description": "Type indicates the type of the token (e.g., \"access\" or \"refresh\").\nRequired: true\nExample: \"access\"",
                     "type": "string"
                 }
             }

@@ -17,6 +17,7 @@ func SetupRouter(cfg *config.Configuration) *gin.Engine {
 		api.POST("/register", handlers.Register)
 		api.POST("/login", func(c *gin.Context) { handlers.Login(c, cfg) })
 		api.POST("/refresh", func(c *gin.Context) { handlers.Refresh(c, cfg) })
+		api.POST("/validate-token", func(c *gin.Context) { handlers.ValidateToken(c, cfg) })
 	}
 
 	return r

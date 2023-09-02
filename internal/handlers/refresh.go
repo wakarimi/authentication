@@ -10,7 +10,7 @@ import (
 
 // RefreshRequest represents the payload required to refresh access token.
 type RefreshRequest struct {
-	// Token used to refresh the access token.
+	// RefreshToken used to refresh the access token.
 	// Required: true
 	// Example: aaaaa.bbbbb.ccccc
 	RefreshToken string `json:"refreshToken" binding:"required"`

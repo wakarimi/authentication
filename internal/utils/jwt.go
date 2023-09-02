@@ -2,6 +2,7 @@ package utils
 
 import (
 	"authentication/internal/config"
+	"authentication/internal/handlers/types"
 	"errors"
 	"github.com/form3tech-oss/jwt-go"
 	"time"
@@ -11,9 +12,23 @@ const (
 	AccessTokenDuration   = time.Minute * 10
 	RefreshTokenDuration  = time.Hour * 24 * 7
 	RefreshTokenThreshold = time.Hour * 24 * 3
-	AccessTokenType       = "access"
-	RefreshTokenType      = "refresh"
+	AccessTokenType       = "ACCESS"
+	RefreshTokenType      = "REFRESH"
 )
+
+func MapClaimsToTokenPayload(claims jwt.MapClaims) (*types.TokenPayload, error) {
+	if accountID, ok := claims["account_id"].(float64); ok {
+		expiryAt, _ := claims["expiry_at"].(float64)
+		tokenType, _ := claims["type"].(string)
+
+		return &types.TokenPayload{
+			AccountID: int(accountID),
+			ExpiryAt:  int64(expiryAt),
+			Type:      tokenType,
+		}, nil
+	}
+	return nil, errors.New("failed to convert jwt.MapClaims to TokenPayload")
+}
 
 func GenerateTokens(cfg *config.Configuration, accountId int) (refreshToken string, accessToken string, err error) {
 	refreshToken, err = generateToken(cfg.RefreshSecretKey, accountId, RefreshTokenDuration, RefreshTokenType)
@@ -59,12 +74,18 @@ func ValidateToken(cfg *config.Configuration, tokenString string, tokenType stri
 }
 
 func generateToken(secretKey string, accountId int, duration time.Duration, tokenType string) (string, error) {
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"account_id": accountId,
-		"expiry_at":  time.Now().Add(duration).Unix(),
-		"type":       tokenType,
-	})
+	payload := types.TokenPayload{
+		AccountID: accountId,
+		ExpiryAt:  time.Now().Add(duration).Unix(),
+		Type:      tokenType,
+	}
+	claims := jwt.MapClaims{
+		"account_id": payload.AccountID,
+		"expiry_at":  payload.ExpiryAt,
+		"type":       payload.Type,
+	}
 
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString([]byte(secretKey))
 }
 
@@ -86,7 +107,13 @@ func validateToken(cfg *config.Configuration, tokenString string, tokenType stri
 	}
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		if int64(time.Now().Unix()) > int64(claims["expiry_at"].(float64)) {
+		payload := types.TokenPayload{
+			AccountID: int(claims["account_id"].(float64)),
+			ExpiryAt:  int64(claims["expiry_at"].(float64)),
+			Type:      claims["type"].(string),
+		}
+
+		if time.Now().Unix() > payload.ExpiryAt {
 			return nil, errors.New("token has expired")
 		}
 		return token, nil

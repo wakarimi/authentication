@@ -44,7 +44,7 @@ definitions:
     properties:
       refreshToken:
         description: |-
-          Token used to refresh the access token.
+          RefreshToken used to refresh the access token.
           Required: true
           Example: aaaaa.bbbbb.ccccc
         type: string
@@ -89,6 +89,34 @@ definitions:
     - password
     - username
     type: object
+  handlers.ValidateTokenRequest:
+    properties:
+      token:
+        description: |-
+          Token represents the access token to be validated.
+          Required: true
+          Example: aaaaa.bbbbb.ccccc
+        type: string
+    required:
+    - token
+    type: object
+  handlers.ValidateTokenResponse:
+    properties:
+      error:
+        description: |-
+          Error contains any potential error messages during validation.
+          Example: Invalid request body.
+        type: string
+      payload:
+        allOf:
+        - $ref: '#/definitions/types.TokenPayload'
+        description: Payload contains the decoded claims from the token.
+      valid:
+        description: |-
+          Valid indicates whether the token is valid or not.
+          Required: true
+        type: boolean
+    type: object
   types.Error:
     properties:
       error:
@@ -98,6 +126,27 @@ definitions:
         type: string
     required:
     - error
+    type: object
+  types.TokenPayload:
+    properties:
+      account_id:
+        description: |-
+          AccountID represents the ID of the associated account.
+          Required: true
+          Example: 12345
+        type: integer
+      expiry_at:
+        description: |-
+          ExpiryAt represents the UNIX timestamp when the token will expire.
+          Required: true
+          Example: 1615569457
+        type: integer
+      type:
+        description: |-
+          Type indicates the type of the token (e.g., "access" or "refresh").
+          Required: true
+          Example: "access"
+        type: string
     type: object
 host: localhost:8020
 info:
@@ -202,4 +251,36 @@ paths:
           schema:
             $ref: '#/definitions/types.Error'
       summary: Register a new account
+  /validate-token:
+    post:
+      consumes:
+      - application/json
+      description: Check if the provided access token is valid.
+      parameters:
+      - description: Token payload
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.ValidateTokenRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Ok.
+          schema:
+            $ref: '#/definitions/handlers.ValidateTokenResponse'
+        "400":
+          description: Error.
+          schema:
+            $ref: '#/definitions/types.Error'
+        "401":
+          description: Error.
+          schema:
+            $ref: '#/definitions/types.Error'
+        "500":
+          description: Error.
+          schema:
+            $ref: '#/definitions/types.Error'
+      summary: Validate access token
 swagger: "2.0"
