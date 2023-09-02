@@ -40,6 +40,33 @@ definitions:
     - accessToken
     - refreshToken
     type: object
+  handlers.RefreshRequest:
+    properties:
+      refreshToken:
+        description: |-
+          Token used to refresh the access token.
+          Required: true
+          Example: aaaaa.bbbbb.ccccc
+        type: string
+    required:
+    - refreshToken
+    type: object
+  handlers.RefreshResponse:
+    properties:
+      accessToken:
+        description: |-
+          AccessToken used to authenticate subsequent requests.
+          Required: true
+          Example: aaaaa.bbbbb.ccccc
+        type: string
+      refreshToken:
+        description: |-
+          RefreshToken used to renew the access token. This may be omitted if not needed.
+          Example: aaaaa.bbbbb.ccccc
+        type: string
+    required:
+    - accessToken
+    type: object
   handlers.RegisterAccountRequest:
     properties:
       password:
@@ -116,6 +143,38 @@ paths:
           schema:
             $ref: '#/definitions/types.Error'
       summary: Login into account
+  /refresh:
+    post:
+      consumes:
+      - application/json
+      description: Refresh access token using refresh token.
+      parameters:
+      - description: Refresh token payload
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.RefreshRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Ok.
+          schema:
+            $ref: '#/definitions/handlers.RefreshResponse'
+        "400":
+          description: Error.
+          schema:
+            $ref: '#/definitions/types.Error'
+        "401":
+          description: Error.
+          schema:
+            $ref: '#/definitions/types.Error'
+        "500":
+          description: Error.
+          schema:
+            $ref: '#/definitions/types.Error'
+      summary: Refresh access token
   /register:
     post:
       consumes:

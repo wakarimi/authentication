@@ -71,6 +71,55 @@ const docTemplate = `{
                 }
             }
         },
+        "/refresh": {
+            "post": {
+                "description": "Refresh access token using refresh token.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Refresh access token",
+                "parameters": [
+                    {
+                        "description": "Refresh token payload",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handlers.RefreshRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok.",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.RefreshResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error.",
+                        "schema": {
+                            "$ref": "#/definitions/types.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Error.",
+                        "schema": {
+                            "$ref": "#/definitions/types.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Error.",
+                        "schema": {
+                            "$ref": "#/definitions/types.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/register": {
             "post": {
                 "description": "Register a new account with the input payload. The first registered account will automatically be assigned the ADMIN role.",
@@ -147,6 +196,34 @@ const docTemplate = `{
                 },
                 "refreshToken": {
                     "description": "RefreshToken used to renew the access token.\nRequired: true\nExample: aaaaa.bbbbb.ccccc",
+                    "type": "string"
+                }
+            }
+        },
+        "handlers.RefreshRequest": {
+            "type": "object",
+            "required": [
+                "refreshToken"
+            ],
+            "properties": {
+                "refreshToken": {
+                    "description": "Token used to refresh the access token.\nRequired: true\nExample: aaaaa.bbbbb.ccccc",
+                    "type": "string"
+                }
+            }
+        },
+        "handlers.RefreshResponse": {
+            "type": "object",
+            "required": [
+                "accessToken"
+            ],
+            "properties": {
+                "accessToken": {
+                    "description": "AccessToken used to authenticate subsequent requests.\nRequired: true\nExample: aaaaa.bbbbb.ccccc",
+                    "type": "string"
+                },
+                "refreshToken": {
+                    "description": "RefreshToken used to renew the access token. This may be omitted if not needed.\nExample: aaaaa.bbbbb.ccccc",
                     "type": "string"
                 }
             }

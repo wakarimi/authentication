@@ -36,14 +36,14 @@ func RefreshTokens(cfg *config.Configuration, refreshToken string) (newRefreshTo
 	}
 
 	claims := token.Claims.(jwt.MapClaims)
-	accountId := claims["account_id"].(int)
+	accountId := int(claims["account_id"].(float64))
 
 	accessToken, err = generateToken(cfg.AccessSecretKey, accountId, AccessTokenDuration, AccessTokenType)
 	if err != nil {
 		return "", "", err
 	}
 
-	if time.Unix(claims["expiry_at"].(int64), 0).Sub(time.Now()) < RefreshTokenThreshold {
+	if time.Unix(int64(claims["expiry_at"].(float64)), 0).Sub(time.Now()) < RefreshTokenThreshold {
 		newRefreshToken, err = generateToken(cfg.RefreshSecretKey, accountId, RefreshTokenDuration, RefreshTokenType)
 		if err != nil {
 			return "", "", err
@@ -86,7 +86,7 @@ func validateToken(cfg *config.Configuration, tokenString string, tokenType stri
 	}
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		if int64(time.Now().Unix()) > claims["expiry_at"].(int64) {
+		if int64(time.Now().Unix()) > int64(claims["expiry_at"].(float64)) {
 			return nil, errors.New("token has expired")
 		}
 		return token, nil
