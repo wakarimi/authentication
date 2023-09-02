@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"authentication/internal/config"
 	"authentication/internal/database/repository"
 	"authentication/internal/handlers/types"
 	"authentication/internal/models"
@@ -10,38 +9,29 @@ import (
 	"net/http"
 )
 
-// RegisterMicroserviceRequest represents the payload required to register a new user.
-type RegisterMicroserviceRequest struct {
+// RegisterUserRequest represents the payload required to register a new user.
+type RegisterUserRequest struct {
 	// Username of the user to be registered.
 	// Required: true
-	// Example: Music
+	// Example: Zalimannard
 	Username string `json:"username" binding:"required,alphanum,min=3,max=30"`
 
 	// Password of the user to be registered.
 	// Required: true
-	// Example: astoyuzcnvoiaersparsarstaoeizxcnvarst
+	// Example: querty01
 	Password string `json:"password" binding:"required,alphanum,min=8,max=50"`
 }
 
-// @Summary Register a new microservice
-// @Description Register a new microservice with the input payload
+// @Summary Register a new user
+// @Description Register a new user with the input payload
 // @Accept  json
 // @Produce  json
-// @Param input body RegisterMicroserviceRequest true "Register payload"
+// @Param input body RegisterUserRequest true "Register payload"
 // @Success 201 "Ok."
-// @Failure 400,403,500 {object} types.Error "Error."
-// @Router /register/microservice [post]
-func RegisterMicroservice(c *gin.Context, cfg *config.Configuration) {
-	clientIp := c.ClientIP()
-
-	if !utils.IsAllowedAddress(clientIp, cfg.MicroservicesIps) {
-		c.JSON(http.StatusForbidden, types.Error{
-			Error: "Address not allowed: " + clientIp,
-		})
-		return
-	}
-
-	var request RegisterMicroserviceRequest
+// @Failure 400,500 {object} types.Error "Error."
+// @Router /register/user [post]
+func Register(c *gin.Context) {
+	var request RegisterUserRequest
 
 	if err := c.ShouldBindJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, types.Error{
@@ -75,7 +65,7 @@ func RegisterMicroservice(c *gin.Context, cfg *config.Configuration) {
 	user := models.User{
 		Username:       request.Username,
 		HashedPassword: hashedPassword,
-		Role:           "MICROSERVICE",
+		Role:           "USER",
 	}
 
 	err = repository.CreateUser(user)

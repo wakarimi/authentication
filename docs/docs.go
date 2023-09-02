@@ -22,52 +22,6 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/register/microservice": {
-            "post": {
-                "description": "Register a new microservice with the input payload",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "Register a new microservice",
-                "parameters": [
-                    {
-                        "description": "Register payload",
-                        "name": "input",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/handlers.RegisterMicroserviceRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Ok."
-                    },
-                    "400": {
-                        "description": "Error.",
-                        "schema": {
-                            "$ref": "#/definitions/types.Error"
-                        }
-                    },
-                    "403": {
-                        "description": "Error.",
-                        "schema": {
-                            "$ref": "#/definitions/types.Error"
-                        }
-                    },
-                    "500": {
-                        "description": "Error.",
-                        "schema": {
-                            "$ref": "#/definitions/types.Error"
-                        }
-                    }
-                }
-            }
-        },
         "/register/user": {
             "post": {
                 "description": "Register a new user with the input payload",
@@ -110,27 +64,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "handlers.RegisterMicroserviceRequest": {
-            "type": "object",
-            "required": [
-                "password",
-                "username"
-            ],
-            "properties": {
-                "password": {
-                    "description": "Password of the user to be registered.\nRequired: true\nExample: astoyuzcnvoiaersparsarstaoeizxcnvarst",
-                    "type": "string",
-                    "maxLength": 50,
-                    "minLength": 8
-                },
-                "username": {
-                    "description": "Username of the user to be registered.\nRequired: true\nExample: Music",
-                    "type": "string",
-                    "maxLength": 30,
-                    "minLength": 3
-                }
-            }
-        },
         "handlers.RegisterUserRequest": {
             "type": "object",
             "required": [

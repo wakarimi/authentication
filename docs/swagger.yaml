@@ -1,27 +1,5 @@
 basePath: /api
 definitions:
-  handlers.RegisterMicroserviceRequest:
-    properties:
-      password:
-        description: |-
-          Password of the user to be registered.
-          Required: true
-          Example: astoyuzcnvoiaersparsarstaoeizxcnvarst
-        maxLength: 50
-        minLength: 8
-        type: string
-      username:
-        description: |-
-          Username of the user to be registered.
-          Required: true
-          Example: Music
-        maxLength: 30
-        minLength: 3
-        type: string
-    required:
-    - password
-    - username
-    type: object
   handlers.RegisterUserRequest:
     properties:
       password:
@@ -66,36 +44,6 @@ info:
   title: Wakarimi Authentication API
   version: "0.0"
 paths:
-  /register/microservice:
-    post:
-      consumes:
-      - application/json
-      description: Register a new microservice with the input payload
-      parameters:
-      - description: Register payload
-        in: body
-        name: input
-        required: true
-        schema:
-          $ref: '#/definitions/handlers.RegisterMicroserviceRequest'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Ok.
-        "400":
-          description: Error.
-          schema:
-            $ref: '#/definitions/types.Error'
-        "403":
-          description: Error.
-          schema:
-            $ref: '#/definitions/types.Error'
-        "500":
-          description: Error.
-          schema:
-            $ref: '#/definitions/types.Error'
-      summary: Register a new microservice
   /register/user:
     post:
       consumes:
