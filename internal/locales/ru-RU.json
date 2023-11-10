@@ -1,0 +1,17 @@
+{
+  "InvalidHeaderFormat": {
+    "other": "Неверный формат запроса"
+  },
+  "InvalidUrlParameterFormat": {
+    "other": "Неверный формат параметра запроса"
+  },
+  "FailedToEncodeRequest": {
+    "other": "Не удалось распознать запрос"
+  },
+  "ValidationFailedForRequest": {
+    "other": "Неверные параметры запроса"
+  },
+  "NotFound": {
+    "other": "Запрашиваемый элемент не найден"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "InvalidHeaderFormat": {
+    "other": "Invalid header format"
+  },
+  "InvalidUrlParameterFormat": {
+    "other": "Invalid request parameter format"
+  },
+  "FailedToEncodeRequest": {
+    "other": "Failed to encode request"
+  },
+  "ValidationFailedForRequest": {
+    "other": "Validation failed for request"
+  },
+  "NotFound": {
+    "other": "Element not found"
+  }
+}
