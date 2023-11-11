@@ -13,5 +13,11 @@
   },
   "NotFound": {
     "other": "Element not found"
+  },
+  "UsernameIsAlreadyTaken": {
+    "other": "Username is already taken"
+  },
+  "FailedToCreateAccount": {
+    "other": "Failed to create account"
   }
 }

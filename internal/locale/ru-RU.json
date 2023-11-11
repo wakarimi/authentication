@@ -13,5 +13,11 @@
   },
   "NotFound": {
     "other": "Запрашиваемый элемент не найден"
+  },
+  "UsernameIsAlreadyTaken": {
+    "other": "Имя пользователя уже занято"
+  },
+  "FailedToCreateAccount": {
+    "other": "Не удалось создать аккаунт"
   }
 }

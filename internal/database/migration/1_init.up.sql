@@ -19,8 +19,18 @@ CREATE TABLE "account_roles"
 
 CREATE TABLE "devices"
 (
-    "id"         SERIAL PRIMARY KEY,
-    "account_id" INTEGER NOT NULL,
-    "name"       TEXT,
+    "id"          SERIAL PRIMARY KEY,
+    "account_id"  INTEGER NOT NULL,
+    "fingerprint" TEXT,
     FOREIGN KEY ("account_id") REFERENCES "accounts" ("id")
+);
+
+CREATE TABLE "refresh_tokens"
+(
+    "id"         SERIAL PRIMARY KEY,
+    "device_id"  INTEGER   NOT NULL,
+    "token"      TEXT      NOT NULL,
+    "created_at" TIMESTAMP NOT NULL,
+    "expires_at" TIMESTAMP NOT NULL,
+    FOREIGN KEY ("device_id") REFERENCES "devices" ("id")
 );

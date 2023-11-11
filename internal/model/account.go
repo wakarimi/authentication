@@ -1,9 +1,9 @@
-package models
+package model
 
 import "time"
 
 type Account struct {
-	Id             int       `db:"id"`
+	ID             int       `db:"id"`
 	Username       string    `db:"username"`
 	HashedPassword string    `db:"hashed_password"`
 	CreatedAt      time.Time `db:"created_at"`

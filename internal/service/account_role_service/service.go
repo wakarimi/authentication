@@ -1,6 +1,8 @@
 package account_role_service
 
-import "authentication/internal/database/repository/account_role_repo"
+import (
+	"authentication/internal/database/repository/account_role_repo"
+)
 
 type Service struct {
 	AccountRoleRepo account_role_repo.Repo

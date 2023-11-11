@@ -5,8 +5,8 @@ import (
 	"authentication/internal/database/repository/account_repo"
 	"authentication/internal/database/repository/account_role_repo"
 	"authentication/internal/database/repository/device_repo"
-	"authentication/internal/handlers/account_handler"
-	"authentication/internal/handlers/token_handler"
+	"authentication/internal/handler/account_handler"
+	"authentication/internal/handler/token_handler"
 	"authentication/internal/middleware"
 	"authentication/internal/service"
 	"authentication/internal/service/account_role_service"
@@ -28,11 +28,12 @@ func SetupRouter(ac *context.AppContext) (r *gin.Engine) {
 
 	r = gin.New()
 	r.Use(middleware.ZerologMiddleware(log.Logger))
+	r.Use(middleware.ProduceLanguageMiddleware())
 
 	bundle := i18n.NewBundle(language.English)
 	bundle.RegisterUnmarshalFunc("toml", json.Unmarshal)
-	bundle.LoadMessageFile("internal/locales/en-US.json")
-	bundle.LoadMessageFile("internal/locales/ru-RU.json")
+	bundle.LoadMessageFile("internal/locale/en-US.json")
+	bundle.LoadMessageFile("internal/locale/ru-RU.json")
 
 	accountRepo := account_repo.NewRepository()
 	accountRoleRepo := account_role_repo.NewRepository()
@@ -48,7 +49,7 @@ func SetupRouter(ac *context.AppContext) (r *gin.Engine) {
 	accountHandler := account_handler.NewHandler(*accountService, *accountRoleService, txManager, bundle)
 	tokenHandler := token_handler.NewHandler(*tokenService, txManager, bundle)
 
-	api := r.Group("/api/auth-service")
+	api := r.Group("/api/auth")
 	{
 		api.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
