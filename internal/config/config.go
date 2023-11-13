@@ -36,7 +36,8 @@ func LoadConfiguration() (config *Configuration, err error) {
 
 	config = &Configuration{
 		Database{
-			ConnectionString: viper.GetString("WAKARIMI_AUTHENTICATION_DB_STRING"),
+			ConnectionString:
+			viper.GetString("WAKARIMI_AUTHENTICATION_DB_STRING"),
 		},
 		HttpServer{
 			Port: viper.GetString("HTTP_SERVER_PORT"),

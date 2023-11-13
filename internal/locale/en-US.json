@@ -19,5 +19,11 @@
   },
   "FailedToCreateAccount": {
     "other": "Failed to create account"
+  },
+  "InvalidUsernameOrPassword": {
+    "other": "Invalid username or password"
+  },
+  "FailedToGenerateTokens": {
+    "other": "Failed to generate tokens"
   }
 }

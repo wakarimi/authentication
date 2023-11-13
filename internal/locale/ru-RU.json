@@ -19,5 +19,11 @@
   },
   "FailedToCreateAccount": {
     "other": "Не удалось создать аккаунт"
+  },
+  "InvalidUsernameOrPassword": {
+    "other": "Неверное имя пользователя или пароль"
+  },
+  "FailedToGenerateTokens": {
+    "other": "Не удалось сгенерировать токены"
   }
 }

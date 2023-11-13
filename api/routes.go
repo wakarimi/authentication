@@ -43,19 +43,19 @@ func SetupRouter(ac *context.AppContext) (r *gin.Engine) {
 
 	accountRoleService := account_role_service.NewService(accountRoleRepo)
 	accountService := account_service.NewService(accountRepo, *accountRoleService)
-	deviceService := device_service.NewService(deviceRepo)
+	deviceService := device_service.NewService(deviceRepo, *accountService)
 	tokenService := token_service.NewService(*accountService, *accountRoleService, *deviceService)
 
 	accountHandler := account_handler.NewHandler(*accountService, *accountRoleService, txManager, bundle)
 	tokenHandler := token_handler.NewHandler(*tokenService, txManager, bundle)
 
-	api := r.Group("/api/auth")
+	api := r.Group("/api")
 	{
 		api.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 		api.POST("/register", accountHandler.Create)
 
-		api.POST("/login", tokenHandler.Create)
+		api.POST("/login", tokenHandler.LogIn)
 
 		token := api.Group("/token")
 		{

@@ -4,6 +4,7 @@ import (
 	"authentication/internal/errors"
 	"authentication/internal/model"
 	"fmt"
+
 	"github.com/jmoiron/sqlx"
 	"github.com/rs/zerolog/log"
 )

@@ -12,7 +12,7 @@ func (r Repository) Create(tx *sqlx.Tx, account model.Account) (accountID int, e
 
 	query := `
 		INSERT INTO accounts(username, hashed_password, created_at, last_login)
-		VALUES (:username, :hashed_password, :created_at, :last_login)
+		VALUES (:username, :hashed_password, CURRENT_TIMESTAMP, NULL)
 		RETURNING id
 	`
 	rows, err := tx.NamedQuery(query, account)
