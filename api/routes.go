@@ -60,10 +60,10 @@ func SetupRouter(ac *context.AppContext) (r *gin.Engine) {
 
 		api.POST("/login", tokenHandler.Login)
 
-		token := api.Group("/token")
+		tokens := api.Group("/tokens")
 		{
-			token.POST("/refresh", tokenHandler.Refresh)
-			token.POST("/validate", tokenHandler.Validate)
+			tokens.POST("/refresh", tokenHandler.Refresh)
+			tokens.POST("/validate", tokenHandler.Validate)
 		}
 	}
 

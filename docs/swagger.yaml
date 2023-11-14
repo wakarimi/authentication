@@ -21,6 +21,78 @@ definitions:
         description: Internal error description
         type: string
     type: object
+  token_handler.loginRequest:
+    properties:
+      fingerprint:
+        description: Device Fingerprint
+        type: string
+      password:
+        description: Account password
+        type: string
+      username:
+        description: Account username
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  token_handler.loginResponse:
+    properties:
+      accessToken:
+        description: Access token for device
+        type: string
+      refreshToken:
+        description: Refresh token for device
+        type: string
+    type: object
+  token_handler.refreshRequest:
+    properties:
+      refreshToken:
+        description: Previous refsesh token
+        type: string
+    required:
+    - refreshToken
+    type: object
+  token_handler.refreshResponse:
+    properties:
+      accessToken:
+        description: Access token for device
+        type: string
+      refreshToken:
+        description: Refresh token for device
+        type: string
+    type: object
+  token_handler.validateRequest:
+    properties:
+      accessToken:
+        description: Access token for validation
+        type: string
+    required:
+    - accessToken
+    type: object
+  token_handler.validateResponse:
+    properties:
+      accountId:
+        description: ID of the account that the token belongs to
+        type: integer
+      deviceId:
+        description: ID of the device that the token belongs to
+        type: integer
+      expiryAt:
+        description: Token expiration time
+        type: integer
+      issuedAt:
+        description: Time of token issuance
+        type: integer
+      roles:
+        description: Account roles
+        items:
+          type: string
+        type: array
+      valid:
+        description: Token verification result
+        type: boolean
+    type: object
 host: localhost:8020
 info:
   contact:
@@ -32,6 +104,44 @@ info:
   title: Wakarimi Authentication API
   version: "0.5"
 paths:
+  /login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - default: en-US
+        description: Language preference
+        in: header
+        name: Produce-Language
+        type: string
+      - description: Account credentials and device fingerprint
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/token_handler.loginRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/token_handler.loginResponse'
+        "400":
+          description: Failed to encode request; Valitadion failed for request
+          schema:
+            $ref: '#/definitions/response.Error'
+        "401":
+          description: Invalid login or password
+          schema:
+            $ref: '#/definitions/response.Error'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Error'
+      summary: Login to account
+      tags:
+      - Tokens
   /register:
     post:
       consumes:
@@ -68,4 +178,76 @@ paths:
       summary: Creates an account
       tags:
       - Accounts
+  /tokens/refresh:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - default: en-US
+        description: Language preference
+        in: header
+        name: Produce-Language
+        type: string
+      - description: Previous refresh token
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/token_handler.refreshRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/token_handler.refreshResponse'
+        "400":
+          description: Failed to encode request; Valitadion failed for request
+          schema:
+            $ref: '#/definitions/response.Error'
+        "401":
+          description: Invalid token; Expired token
+          schema:
+            $ref: '#/definitions/response.Error'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Error'
+      summary: Refresh tokens
+      tags:
+      - Tokens
+  /tokens/validate:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - default: en-US
+        description: Language preference
+        in: header
+        name: Produce-Language
+        type: string
+      - description: The token to be validated
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/token_handler.validateRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/token_handler.validateResponse'
+        "400":
+          description: Failed to encode request; Valitadion failed for request
+          schema:
+            $ref: '#/definitions/response.Error'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Error'
+      summary: Validates the token
+      tags:
+      - Tokens
 swagger: "2.0"

@@ -36,6 +36,7 @@ type validateResponse struct {
 
 // Validates the token
 // @Summary Validates the token
+// @Tags Tokens
 // @Accept json
 // @Produce json
 // @Param Produce-Language header string false "Language preference" default(en-US)
@@ -43,7 +44,7 @@ type validateResponse struct {
 // @Success 201 {object} validateResponse
 // @Failure 400 {object} response.Error "Failed to encode request; Valitadion failed for request"
 // @Failure 500 {object} response.Error "Internal server error"
-// @Router /validate [post]
+// @Router /tokens/validate [post]
 func (h *Handler) Validate(c *gin.Context) {
 	log.Debug().Msg("Validating an access token")
 

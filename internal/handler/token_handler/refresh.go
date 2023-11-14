@@ -28,6 +28,7 @@ type refreshResponse struct {
 
 // Refresh tokens
 // @Summary Refresh tokens
+// @Tags Tokens
 // @Accept json
 // @Produce json
 // @Param Produce-Language header string false "Language preference" default(en-US)
@@ -36,7 +37,7 @@ type refreshResponse struct {
 // @Failure 400 {object} response.Error "Failed to encode request; Valitadion failed for request"
 // @Failure 401 {object} response.Error "Invalid token; Expired token"
 // @Failure 500 {object} response.Error "Internal server error"
-// @Router /refresh [post]
+// @Router /tokens/refresh [post]
 func (h *Handler) Refresh(c *gin.Context) {
 	log.Debug().Msg("Refreshing tokens")
 

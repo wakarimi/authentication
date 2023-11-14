@@ -15,6 +15,64 @@
     "host": "localhost:8020",
     "basePath": "/api/auth",
     "paths": {
+        "/login": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Tokens"
+                ],
+                "summary": "Login to account",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "en-US",
+                        "description": "Language preference",
+                        "name": "Produce-Language",
+                        "in": "header"
+                    },
+                    {
+                        "description": "Account credentials and device fingerprint",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/token_handler.loginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/token_handler.loginResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Failed to encode request; Valitadion failed for request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid login or password",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/register": {
             "post": {
                 "consumes": [
@@ -69,6 +127,116 @@
                     }
                 }
             }
+        },
+        "/tokens/refresh": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Tokens"
+                ],
+                "summary": "Refresh tokens",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "en-US",
+                        "description": "Language preference",
+                        "name": "Produce-Language",
+                        "in": "header"
+                    },
+                    {
+                        "description": "Previous refresh token",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/token_handler.refreshRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/token_handler.refreshResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Failed to encode request; Valitadion failed for request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid token; Expired token",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/tokens/validate": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Tokens"
+                ],
+                "summary": "Validates the token",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "en-US",
+                        "description": "Language preference",
+                        "name": "Produce-Language",
+                        "in": "header"
+                    },
+                    {
+                        "description": "The token to be validated",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/token_handler.validateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/token_handler.validateResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Failed to encode request; Valitadion failed for request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -99,6 +267,109 @@
                 "reason": {
                     "description": "Internal error description",
                     "type": "string"
+                }
+            }
+        },
+        "token_handler.loginRequest": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "fingerprint": {
+                    "description": "Device Fingerprint",
+                    "type": "string"
+                },
+                "password": {
+                    "description": "Account password",
+                    "type": "string"
+                },
+                "username": {
+                    "description": "Account username",
+                    "type": "string"
+                }
+            }
+        },
+        "token_handler.loginResponse": {
+            "type": "object",
+            "properties": {
+                "accessToken": {
+                    "description": "Access token for device",
+                    "type": "string"
+                },
+                "refreshToken": {
+                    "description": "Refresh token for device",
+                    "type": "string"
+                }
+            }
+        },
+        "token_handler.refreshRequest": {
+            "type": "object",
+            "required": [
+                "refreshToken"
+            ],
+            "properties": {
+                "refreshToken": {
+                    "description": "Previous refsesh token",
+                    "type": "string"
+                }
+            }
+        },
+        "token_handler.refreshResponse": {
+            "type": "object",
+            "properties": {
+                "accessToken": {
+                    "description": "Access token for device",
+                    "type": "string"
+                },
+                "refreshToken": {
+                    "description": "Refresh token for device",
+                    "type": "string"
+                }
+            }
+        },
+        "token_handler.validateRequest": {
+            "type": "object",
+            "required": [
+                "accessToken"
+            ],
+            "properties": {
+                "accessToken": {
+                    "description": "Access token for validation",
+                    "type": "string"
+                }
+            }
+        },
+        "token_handler.validateResponse": {
+            "type": "object",
+            "properties": {
+                "accountId": {
+                    "description": "ID of the account that the token belongs to",
+                    "type": "integer"
+                },
+                "deviceId": {
+                    "description": "ID of the device that the token belongs to",
+                    "type": "integer"
+                },
+                "expiryAt": {
+                    "description": "Token expiration time",
+                    "type": "integer"
+                },
+                "issuedAt": {
+                    "description": "Time of token issuance",
+                    "type": "integer"
+                },
+                "roles": {
+                    "description": "Account roles",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "valid": {
+                    "description": "Token verification result",
+                    "type": "boolean"
                 }
             }
         }

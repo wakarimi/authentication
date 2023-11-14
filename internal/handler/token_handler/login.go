@@ -32,6 +32,7 @@ type loginResponse struct {
 
 // Login to account
 // @Summary Login to account
+// @Tags Tokens
 // @Accept json
 // @Produce json
 // @Param Produce-Language header string false "Language preference" default(en-US)
