@@ -5,6 +5,7 @@ import (
 	"authentication/internal/database/repository/account_repo"
 	"authentication/internal/database/repository/account_role_repo"
 	"authentication/internal/database/repository/device_repo"
+	"authentication/internal/database/repository/refresh_token_repo"
 	"authentication/internal/handler/account_handler"
 	"authentication/internal/handler/token_handler"
 	"authentication/internal/middleware"
@@ -14,6 +15,7 @@ import (
 	"authentication/internal/service/device_service"
 	"authentication/internal/service/token_service"
 	"encoding/json"
+
 	"github.com/gin-gonic/gin"
 	"github.com/nicksnyder/go-i18n/v2/i18n"
 	"github.com/rs/zerolog/log"
@@ -38,13 +40,14 @@ func SetupRouter(ac *context.AppContext) (r *gin.Engine) {
 	accountRepo := account_repo.NewRepository()
 	accountRoleRepo := account_role_repo.NewRepository()
 	deviceRepo := device_repo.NewRepository()
+	refreshTokenRepo := refresh_token_repo.NewRepository()
 
 	txManager := service.NewTransactionManager(*ac.Db)
 
 	accountRoleService := account_role_service.NewService(accountRoleRepo)
 	accountService := account_service.NewService(accountRepo, *accountRoleService)
 	deviceService := device_service.NewService(deviceRepo, *accountService)
-	tokenService := token_service.NewService(*accountService, *accountRoleService, *deviceService)
+	tokenService := token_service.NewService(refreshTokenRepo, ac.Config.RefreshSecretKey, ac.Config.AccessSecretKey, *accountService, *accountRoleService, *deviceService)
 
 	accountHandler := account_handler.NewHandler(*accountService, *accountRoleService, txManager, bundle)
 	tokenHandler := token_handler.NewHandler(*tokenService, txManager, bundle)
@@ -55,7 +58,7 @@ func SetupRouter(ac *context.AppContext) (r *gin.Engine) {
 
 		api.POST("/register", accountHandler.Create)
 
-		api.POST("/login", tokenHandler.LogIn)
+		api.POST("/login", tokenHandler.Login)
 
 		token := api.Group("/token")
 		{

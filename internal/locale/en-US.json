@@ -25,5 +25,11 @@
   },
   "FailedToGenerateTokens": {
     "other": "Failed to generate tokens"
+  },
+  "InvalidPreviousToken": {
+    "other": "Invalid previous token"
+  },
+  "FailedToValidateToken": {
+    "other": "Failed to validate token"
   }
 }

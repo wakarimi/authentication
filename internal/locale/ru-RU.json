@@ -25,5 +25,12 @@
   },
   "FailedToGenerateTokens": {
     "other": "Не удалось сгенерировать токены"
+  },
+  "InvalidPreviousToken": {
+    "other": "Неверный предоставленный токен"
+  },
+  "FailedToValidateToken": {
+    "other": "Не удалось проверить токен"
   }
 }
+

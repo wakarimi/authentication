@@ -3,12 +3,13 @@ package account_handler
 import (
 	"authentication/internal/errors"
 	"authentication/internal/handler/response"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/jmoiron/sqlx"
 	"github.com/nicksnyder/go-i18n/v2/i18n"
 	"github.com/rs/zerolog/log"
-	"net/http"
 )
 
 // createRequest represents the request body for registration
@@ -24,8 +25,8 @@ type createRequest struct {
 // @Tags Accounts
 // @Accept json
 // @Produce json
-// @Param Produce-Language 	header 	string 			false 	"Language preference" default(en-US)
-// @Param request			body	createRequest	true	"Account credentials"
+// @Param Produce-Language header string false "Language preference" default(en-US)
+// @Param request body createRequest true "Account credentials"
 // @Success 201
 // @Failure 400 {object} response.Error "Failed to encode request; Validation failed for request"
 // @Failure 409 {object} response.Error "Username is already taken"
@@ -40,10 +41,14 @@ func (h *Handler) Create(c *gin.Context) {
 	var request createRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
 		log.Error().Err(err).Msg("Failed to encode request")
+		messageID := "FailedToEncodeRequest"
+		message, err := localizer.Localize(&i18n.LocalizeConfig{MessageID: messageID})
+		if err != nil {
+			message = h.EngLocalizer.MustLocalize(&i18n.LocalizeConfig{MessageID: messageID})
+		}
 		c.JSON(http.StatusBadRequest, response.Error{
-			Message: localizer.MustLocalize(&i18n.LocalizeConfig{
-				MessageID: "FailedToEncodeRequest"}),
-			Reason: err.Error(),
+			Message: message,
+			Reason:  err.Error(),
 		})
 		return
 	}
@@ -52,10 +57,14 @@ func (h *Handler) Create(c *gin.Context) {
 	validate := validator.New()
 	if err := validate.Struct(request); err != nil {
 		log.Error().Err(err).Msg("Validation failed for request")
+		messageID := "ValidationFailedForRequest"
+		message, err := localizer.Localize(&i18n.LocalizeConfig{MessageID: messageID})
+		if err != nil {
+			message = h.EngLocalizer.MustLocalize(&i18n.LocalizeConfig{MessageID: messageID})
+		}
 		c.JSON(http.StatusBadRequest, response.Error{
-			Message: localizer.MustLocalize(&i18n.LocalizeConfig{
-				MessageID: "ValidationFailedForRequest"}),
-			Reason: err.Error(),
+			Message: message,
+			Reason:  err.Error(),
 		})
 		return
 	}
@@ -70,17 +79,25 @@ func (h *Handler) Create(c *gin.Context) {
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to create account")
 		if _, ok := err.(errors.Conflict); ok {
+			messageID := "UsernameIsAlreadyTaken"
+			message, err := localizer.Localize(&i18n.LocalizeConfig{MessageID: messageID})
+			if err != nil {
+				message = h.EngLocalizer.MustLocalize(&i18n.LocalizeConfig{MessageID: messageID})
+			}
 			c.JSON(http.StatusConflict, response.Error{
-				Message: localizer.MustLocalize(&i18n.LocalizeConfig{
-					MessageID: "UsernameIsAlreadyTaken"}),
-				Reason: err.Error(),
+				Message: message,
+				Reason:  err.Error(),
 			})
 			return
 		} else {
+			messageID := "FailedToCreateAccount"
+			message, err := localizer.Localize(&i18n.LocalizeConfig{MessageID: messageID})
+			if err != nil {
+				message = h.EngLocalizer.MustLocalize(&i18n.LocalizeConfig{MessageID: messageID})
+			}
 			c.JSON(http.StatusInternalServerError, response.Error{
-				Message: localizer.MustLocalize(&i18n.LocalizeConfig{
-					MessageID: "FailedToCreateAccount"}),
-				Reason: err.Error(),
+				Message: message,
+				Reason:  err.Error(),
 			})
 			return
 		}
