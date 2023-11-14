@@ -1,0 +1,35 @@
+{
+  "InvalidHeaderFormat": {
+    "other": "Invalid header format"
+  },
+  "InvalidUrlParameterFormat": {
+    "other": "Invalid request parameter format"
+  },
+  "FailedToEncodeRequest": {
+    "other": "Failed to encode request"
+  },
+  "ValidationFailedForRequest": {
+    "other": "Validation failed for request"
+  },
+  "NotFound": {
+    "other": "Element not found"
+  },
+  "UsernameIsAlreadyTaken": {
+    "other": "Username is already taken"
+  },
+  "FailedToCreateAccount": {
+    "other": "Failed to create account"
+  },
+  "InvalidUsernameOrPassword": {
+    "other": "Invalid username or password"
+  },
+  "FailedToGenerateTokens": {
+    "other": "Failed to generate tokens"
+  },
+  "InvalidPreviousToken": {
+    "other": "Invalid previous token"
+  },
+  "FailedToValidateToken": {
+    "other": "Failed to validate token"
+  }
+}

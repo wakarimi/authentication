@@ -1,24 +1,24 @@
 package config
 
 import (
-	"fmt"
+	"github.com/rs/zerolog"
 	"github.com/spf13/viper"
 	"strings"
 )
 
 type Configuration struct {
-	DatabaseConfiguration
-	HttpServerConfiguration
+	Database
+	HttpServer
 	JwtConfiguration
+	Logger
 }
 
-type DatabaseConfiguration struct {
-	DatabaseConnectionString string
+type Database struct {
+	ConnectionString string
 }
 
-type HttpServerConfiguration struct {
-	Port             string
-	MicroservicesIps []string
+type HttpServer struct {
+	Port string
 }
 
 type JwtConfiguration struct {
@@ -26,35 +26,50 @@ type JwtConfiguration struct {
 	AccessSecretKey  string
 }
 
+type Logger struct {
+	Level zerolog.Level
+}
+
 func LoadConfiguration() (config *Configuration, err error) {
 	viper.AutomaticEnv()
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
-	localIps := []string{"127.0.0.1", "::1"}
 	config = &Configuration{
-		DatabaseConfiguration{
-			DatabaseConnectionString: viper.GetString("WAKARIMI_AUTHENTICATION_DB_STRING"),
+		Database{
+			ConnectionString:
+			viper.GetString("WAKARIMI_AUTHENTICATION_DB_STRING"),
 		},
-		HttpServerConfiguration{
-			Port:             viper.GetString("HTTP_SERVER_PORT"),
-			MicroservicesIps: append(localIps, parseIp4s(viper.GetString("ALLOWED_IP4"))...),
+		HttpServer{
+			Port: viper.GetString("HTTP_SERVER_PORT"),
 		},
 		JwtConfiguration{
 			RefreshSecretKey: viper.GetString("REFRESH_SECRET_KEY"),
 			AccessSecretKey:  viper.GetString("ACCESS_SECRET_KEY"),
+		},
+		Logger{
+			Level: loadLoggingLevel(),
 		},
 	}
 
 	return config, nil
 }
 
-func parseIp4s(ips string) []string {
-	parts := strings.Split(ips, "_")
-	var result []string
-	for i := 0; i < len(parts); i += 4 {
-		if i+3 < len(parts) {
-			result = append(result, fmt.Sprintf("%s.%s.%s.%s", parts[i], parts[i+1], parts[i+2], parts[i+3]))
-		}
+func loadLoggingLevel() zerolog.Level {
+	levelStr := viper.GetString("LOGGING_LEVEL")
+	switch levelStr {
+	case "TRACE":
+		return zerolog.TraceLevel
+	case "DEBUG":
+		return zerolog.DebugLevel
+	case "INFO":
+		return zerolog.InfoLevel
+	case "WARN":
+		return zerolog.WarnLevel
+	case "ERROR":
+		return zerolog.ErrorLevel
+	case "FATAL":
+		return zerolog.FatalLevel
+	default:
+		return zerolog.InfoLevel
 	}
-	return result
 }
