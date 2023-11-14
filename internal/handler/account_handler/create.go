@@ -80,8 +80,8 @@ func (h *Handler) Create(c *gin.Context) {
 		log.Error().Err(err).Msg("Failed to create account")
 		if _, ok := err.(errors.Conflict); ok {
 			messageID := "UsernameIsAlreadyTaken"
-			message, err := localizer.Localize(&i18n.LocalizeConfig{MessageID: messageID})
-			if err != nil {
+			message, errLoc := localizer.Localize(&i18n.LocalizeConfig{MessageID: messageID})
+			if errLoc != nil {
 				message = h.EngLocalizer.MustLocalize(&i18n.LocalizeConfig{MessageID: messageID})
 			}
 			c.JSON(http.StatusConflict, response.Error{
@@ -91,8 +91,8 @@ func (h *Handler) Create(c *gin.Context) {
 			return
 		} else {
 			messageID := "FailedToCreateAccount"
-			message, err := localizer.Localize(&i18n.LocalizeConfig{MessageID: messageID})
-			if err != nil {
+			message, errLoc := localizer.Localize(&i18n.LocalizeConfig{MessageID: messageID})
+			if errLoc != nil {
 				message = h.EngLocalizer.MustLocalize(&i18n.LocalizeConfig{MessageID: messageID})
 			}
 			c.JSON(http.StatusInternalServerError, response.Error{

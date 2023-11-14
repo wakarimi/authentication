@@ -2,6 +2,7 @@ package token_service
 
 import (
 	"authentication/internal/service/token_service/token_payload"
+	"fmt"
 
 	"github.com/form3tech-oss/jwt-go"
 	"github.com/rs/zerolog/log"
@@ -19,9 +20,22 @@ func (s Service) GetAccessTokenPayload(accessToken string) (accessTokenPayload t
 		return token_payload.AccessToken{}, err
 	}
 
+	var rolesSlice []string
+	if roles, ok := claims["roles"].([]interface{}); ok {
+		for _, role := range roles {
+			if strRole, ok := role.(string); ok {
+				rolesSlice = append(rolesSlice, strRole)
+			} else {
+				err := fmt.Errorf("claims is not string slice")
+				log.Error().Err(err).Msg("Claim is not []string")
+				return token_payload.AccessToken{}, err
+			}
+		}
+	}
+
 	accessTokenPayload.AccountID = int(claims["accountId"].(float64))
 	accessTokenPayload.DeviceID = int(claims["deviceId"].(float64))
-	accessTokenPayload.Roles = claims["roles"].([]string)
+	accessTokenPayload.Roles = rolesSlice
 	accessTokenPayload.IssuedAt = int64(claims["issuedAt"].(float64))
 	accessTokenPayload.ExpiryAt = int64(claims["expiryAt"].(float64))
 

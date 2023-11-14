@@ -57,7 +57,7 @@ func (s Service) GenerateAccessToken(tx *sqlx.Tx, refreshToken string) (accessTo
 	}
 
 	accessTokenByte := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	accessToken, err = accessTokenByte.SignedString([]byte(s.RefreshSecretKey))
+	accessToken, err = accessTokenByte.SignedString([]byte(s.AccessSecretKey))
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to create new token string")
 		return "", err

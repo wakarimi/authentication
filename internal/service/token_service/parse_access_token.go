@@ -9,7 +9,7 @@ func (s Service) ParseAccessToken(accessTokenString string) (accessToken *jwt.To
 	log.Debug().Msg("Parsing an access token")
 
 	accessToken, err = jwt.Parse(accessTokenString, func(token *jwt.Token) (interface{}, error) {
-		return []byte(s.RefreshSecretKey), nil
+		return []byte(s.AccessSecretKey), nil
 	})
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to parse refresh token")

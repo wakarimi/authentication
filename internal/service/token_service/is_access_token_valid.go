@@ -1,6 +1,10 @@
 package token_service
 
-import "github.com/rs/zerolog/log"
+import (
+	"time"
+
+	"github.com/rs/zerolog/log"
+)
 
 func (s Service) IsAccessTokenValid(accessToken string) (isValid bool, err error) {
 	log.Debug().Msg("Checking the validity of the access token")
@@ -11,7 +15,22 @@ func (s Service) IsAccessTokenValid(accessToken string) (isValid bool, err error
 		return false, err
 	}
 
-	isValid = parsedAccessToken.Valid
-	log.Debug().Bool("isValid", isValid).Msg("Access token checked")
+	isParsed := parsedAccessToken.Valid
+
+	isExpired := false
+	if isParsed {
+		accessTokenPayload, err := s.GetAccessTokenPayload(accessToken)
+		if err != nil {
+			log.Error().Err(err).Msg("Failed to get access token payload")
+			return false, err
+		}
+		if accessTokenPayload.ExpiryAt < time.Now().Unix() {
+			isExpired = true
+		}
+	}
+
+	isValid = isParsed && !isExpired
+
+	log.Debug().Bool("isParsed", isParsed).Bool("isExpired", isExpired).Msg("Access token checked")
 	return isValid, nil
 }

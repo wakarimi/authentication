@@ -14,6 +14,19 @@ import (
 )
 
 func (s Service) GenerateRefreshTokenByCredentials(tx *sqlx.Tx, username string, password string, fingerprint string) (refreshToken string, err error) {
+	log.Debug().Str("username", username).Str("fingerprint", fingerprint).Msg("Generating refresh token by credentials")
+
+	isUsernameExists, err := s.AccountService.IsUsernameTaken(tx, username)
+	if err != nil {
+		log.Error().Err(err).Str("username", username).Str("fingerprint", fingerprint).Msg("Failed to check account by username existence")
+		return "", err
+	}
+	if !isUsernameExists {
+		err := errors.Unauthorized{Message: "invalid username or password"}
+		log.Error().Err(err).Str("ureaname", username).Msg("Invalid username or password")
+		return "", err
+	}
+
 	account, err := s.AccountService.GetByUsername(tx, username)
 	if err != nil {
 		log.Error().Err(err).Str("username", username).Msg("Failed to get account by username")
