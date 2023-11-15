@@ -42,8 +42,8 @@ func (h *Handler) Create(c *gin.Context) {
 	if err := c.ShouldBindJSON(&request); err != nil {
 		log.Error().Err(err).Msg("Failed to encode request")
 		messageID := "FailedToEncodeRequest"
-		message, err := localizer.Localize(&i18n.LocalizeConfig{MessageID: messageID})
-		if err != nil {
+		message, errLoc := localizer.Localize(&i18n.LocalizeConfig{MessageID: messageID})
+		if errLoc != nil {
 			message = h.EngLocalizer.MustLocalize(&i18n.LocalizeConfig{MessageID: messageID})
 		}
 		c.JSON(http.StatusBadRequest, response.Error{
@@ -58,8 +58,8 @@ func (h *Handler) Create(c *gin.Context) {
 	if err := validate.Struct(request); err != nil {
 		log.Error().Err(err).Msg("Validation failed for request")
 		messageID := "ValidationFailedForRequest"
-		message, err := localizer.Localize(&i18n.LocalizeConfig{MessageID: messageID})
-		if err != nil {
+		message, errLoc := localizer.Localize(&i18n.LocalizeConfig{MessageID: messageID})
+		if errLoc != nil {
 			message = h.EngLocalizer.MustLocalize(&i18n.LocalizeConfig{MessageID: messageID})
 		}
 		c.JSON(http.StatusBadRequest, response.Error{
