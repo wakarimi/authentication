@@ -22,6 +22,62 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/accounts/me": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Request for information about the requester's account",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "en-US",
+                        "description": "Language preference",
+                        "name": "Produce-Language",
+                        "in": "header"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Account ID",
+                        "name": "X-Account-ID",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/account_handler.getMeResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid X-Account-ID format",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Account not found",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/login": {
             "post": {
                 "consumes": [
@@ -264,6 +320,26 @@ const docTemplate = `{
                 }
             }
         },
+        "account_handler.getMeResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "ID of the account",
+                    "type": "integer"
+                },
+                "roles": {
+                    "description": "Roles of the account",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "username": {
+                    "description": "Username of the account",
+                    "type": "string"
+                }
+            }
+        },
         "response.Error": {
             "type": "object",
             "properties": {
@@ -387,7 +463,7 @@ const docTemplate = `{
 var SwaggerInfo = &swag.Spec{
 	Version:          "0.5",
 	Host:             "localhost:8020",
-	BasePath:         "/api/auth",
+	BasePath:         "/api",
 	Schemes:          []string{},
 	Title:            "Wakarimi Authentication API",
 	Description:      "",

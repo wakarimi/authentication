@@ -13,12 +13,28 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+// getMeRequest represents the response body of user's request for himself
 type getMeResponse struct {
-	ID       int      `json:"id"`
-	Username string   `json:"username"`
-	Roles    []string `json:"roles"`
+	// ID of the account
+	ID int `json:"id"`
+	// Username of the account
+	Username string `json:"username"`
+	// Roles of the account
+	Roles []string `json:"roles"`
 }
 
+// Request for information about the requester's account
+// @Summary Request for information about the requester's account
+// @Tags Accounts
+// @Accept json
+// @Produce json
+// @Param Produce-Language header string false "Language preference" default(en-US)
+// @Param X-Account-ID header int true "Account ID"
+// @Success 200 {object} getMeResponse
+// @Failure 400 {object} response.Error "Invalid X-Account-ID format"
+// @Failure 404 {object} response.Error "Account not found"
+// @Failure 500 {object} response.Error "Internal server error"
+// @Router /accounts/me [get]
 func (h *Handler) GetMe(c *gin.Context) {
 	log.Debug().Msg("Getting requester's account")
 
