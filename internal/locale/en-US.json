@@ -31,5 +31,11 @@
   },
   "FailedToValidateToken": {
     "other": "Failed to validate token"
+  },
+  "AccountNotFound": {
+    "other": "Account not found"
+  },
+  "FailedToGetAccount": {
+    "other": "Failed to get account"
   }
 }

@@ -31,6 +31,11 @@
   },
   "FailedToValidateToken": {
     "other": "Не удалось проверить токен"
+  },
+  "AccountNotFound": {
+    "other": "Аккаунт не найден"
+  },
+  "FailedToGetAccount": {
+    "other": "Не удалось получить аккаунт"
   }
 }
-
