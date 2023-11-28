@@ -6,11 +6,12 @@ import (
 	"authentication/internal/config"
 	"authentication/internal/context"
 	"authentication/internal/database"
+	"os"
+
 	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"os"
 )
 
 // @title Wakarimi Authentication API
@@ -23,7 +24,7 @@ import (
 // @license.url https://opensource.org/licenses/MIT
 
 // @host localhost:8020
-// @BasePath /api/auth
+// @BasePath /api
 func main() {
 	cfg := loadConfiguration()
 

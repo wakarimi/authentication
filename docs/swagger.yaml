@@ -1,4 +1,4 @@
-basePath: /api/auth
+basePath: /api
 definitions:
   account_handler.createRequest:
     properties:
@@ -11,6 +11,20 @@ definitions:
     required:
     - password
     - username
+    type: object
+  account_handler.getMeResponse:
+    properties:
+      id:
+        description: ID of the account
+        type: integer
+      roles:
+        description: Roles of the account
+        items:
+          type: string
+        type: array
+      username:
+        description: Username of the account
+        type: string
     type: object
   response.Error:
     properties:
@@ -104,6 +118,43 @@ info:
   title: Wakarimi Authentication API
   version: "0.5"
 paths:
+  /accounts/me:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - default: en-US
+        description: Language preference
+        in: header
+        name: Produce-Language
+        type: string
+      - description: Account ID
+        in: header
+        name: X-Account-ID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/account_handler.getMeResponse'
+        "400":
+          description: Invalid X-Account-ID format
+          schema:
+            $ref: '#/definitions/response.Error'
+        "404":
+          description: Account not found
+          schema:
+            $ref: '#/definitions/response.Error'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Error'
+      summary: Request for information about the requester's account
+      tags:
+      - Accounts
   /login:
     post:
       consumes:

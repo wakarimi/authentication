@@ -65,6 +65,11 @@ func SetupRouter(ac *context.AppContext) (r *gin.Engine) {
 			tokens.POST("/refresh", tokenHandler.Refresh)
 			tokens.POST("/validate", tokenHandler.Validate)
 		}
+
+		accounts := api.Group("accounts")
+		{
+			accounts.GET("/me", accountHandler.GetMe)
+		}
 	}
 
 	log.Debug().Msg("Router setup successfully")
