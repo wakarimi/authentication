@@ -3,6 +3,7 @@ package account_handler
 import (
 	"authentication/internal/errors"
 	"authentication/internal/handler/response"
+	"authentication/internal/model"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -12,33 +13,33 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-// createRequest represents the request body for registration
-type createRequest struct {
+// signUpRequest represents the request body for registration
+type signUpRequest struct {
 	// Desired username
 	Username string `json:"username" validate:"required,alphanum"`
 	// Password for logging into your account
 	Password string `json:"password" validate:"required,alphanum"`
 }
 
-// Create an account
-// @Summary Creates an account
+// Register account
+// @Summary Register account
 // @Tags Accounts
 // @Accept json
 // @Produce json
 // @Param Produce-Language header string false "Language preference" default(en-US)
-// @Param request body createRequest true "Account credentials"
-// @Success 201
+// @Param request body signUpRequest true "Account credentials"
+// @Success 204
 // @Failure 400 {object} response.Error "Failed to encode request; Validation failed for request"
 // @Failure 409 {object} response.Error "Username is already taken"
 // @Failure 500 {object} response.Error "Internal server error"
-// @Router /register [post]
-func (h *Handler) Create(c *gin.Context) {
-	log.Debug().Msg("Creating an account")
+// @Router /accounts/sign-up [post]
+func (h *Handler) SignUp(c *gin.Context) {
+	log.Debug().Msg("Account registration")
 
 	lang := c.MustGet("lang").(string)
 	localizer := i18n.NewLocalizer(h.Bundle, lang)
 
-	var request createRequest
+	var request signUpRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
 		log.Error().Err(err).Msg("Failed to encode request")
 		messageID := "FailedToEncodeRequest"
@@ -70,14 +71,17 @@ func (h *Handler) Create(c *gin.Context) {
 	}
 
 	err := h.TransactionManager.WithTransaction(func(tx *sqlx.Tx) (err error) {
-		err = h.AccountService.Create(tx, request.Username, request.Password)
+		account := model.Account{
+			Username: request.Username,
+		}
+		err = h.AccountService.Create(tx, account, request.Password)
 		if err != nil {
 			return err
 		}
 		return nil
 	})
 	if err != nil {
-		log.Error().Err(err).Msg("Failed to create account")
+		log.Error().Err(err).Msg("Failed to register account")
 		if _, ok := err.(errors.Conflict); ok {
 			messageID := "UsernameIsAlreadyTaken"
 			message, errLoc := localizer.Localize(&i18n.LocalizeConfig{MessageID: messageID})
@@ -90,7 +94,7 @@ func (h *Handler) Create(c *gin.Context) {
 			})
 			return
 		} else {
-			messageID := "FailedToCreateAccount"
+			messageID := "FailedToRegisterAccount"
 			message, errLoc := localizer.Localize(&i18n.LocalizeConfig{MessageID: messageID})
 			if errLoc != nil {
 				message = h.EngLocalizer.MustLocalize(&i18n.LocalizeConfig{MessageID: messageID})
@@ -103,6 +107,6 @@ func (h *Handler) Create(c *gin.Context) {
 		}
 	}
 
-	log.Debug().Msg("Account created")
-	c.Status(http.StatusCreated)
+	log.Debug().Msg("Account registered")
+	c.Status(http.StatusNoContent)
 }

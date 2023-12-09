@@ -1,4 +1,16 @@
 {
+  "UsernameIsAlreadyTaken": {
+    "other": "Username is already taken"
+  },
+  "FailedToRegisterAccount": {
+    "other": "Failed to register account"
+  },
+  "InvalidUsernameOrPassword": {
+    "other": "Invalid username or password"
+  },
+  "FailedToGetAccess": {
+    "other": "Failed to get access"
+  },
   "InvalidHeaderFormat": {
     "other": "Invalid header format"
   },
@@ -14,28 +26,22 @@
   "NotFound": {
     "other": "Element not found"
   },
-  "UsernameIsAlreadyTaken": {
-    "other": "Username is already taken"
-  },
-  "FailedToCreateAccount": {
-    "other": "Failed to create account"
-  },
-  "InvalidUsernameOrPassword": {
-    "other": "Invalid username or password"
-  },
-  "FailedToGenerateTokens": {
-    "other": "Failed to generate tokens"
-  },
   "InvalidPreviousToken": {
     "other": "Invalid previous token"
   },
-  "FailedToValidateToken": {
-    "other": "Failed to validate token"
+  "FailedToVerifyToken": {
+    "other": "Failed to verify token"
   },
   "AccountNotFound": {
     "other": "Account not found"
   },
+  "DeviceNotFound": {
+    "other": "Account not found"
+  },
   "FailedToGetAccount": {
     "other": "Failed to get account"
+  },
+  "FailedToSignOut": {
+    "other": "Failed to sign out"
   }
 }

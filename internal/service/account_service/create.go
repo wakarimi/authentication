@@ -4,20 +4,21 @@ import (
 	"authentication/internal/errors"
 	"authentication/internal/model"
 	"fmt"
+
 	"github.com/jmoiron/sqlx"
 	"github.com/rs/zerolog/log"
 )
 
-func (s Service) Create(tx *sqlx.Tx, username string, password string) (err error) {
-	log.Debug().Str("username", username).Msg("Creating an account")
+func (s Service) Create(tx *sqlx.Tx, account model.Account, password string) (err error) {
+	log.Debug().Str("usernme", account.Username).Msg("Account creation")
 
-	isUsernameAlreadyTaken, err := s.IsUsernameTaken(tx, username)
+	isUsernameTaken, err := s.IsUsernameTaken(tx, account.Username)
 	if err != nil {
-		log.Error().Err(err).Str("username", username).Msg("Failed to check if the username is taken")
+		log.Error().Err(err).Str("username", account.Username).Msg("Failed to check if the username is taken")
 		return err
 	}
-	if isUsernameAlreadyTaken {
-		err = errors.Conflict{Message: fmt.Sprintf("username %s is already taken", username)}
+	if isUsernameTaken {
+		err = errors.Conflict{Message: fmt.Sprintf("username %s is already taken", account.Username)}
 		log.Error().Err(err).Msg("Username is already taken")
 		return err
 	}
@@ -28,13 +29,11 @@ func (s Service) Create(tx *sqlx.Tx, username string, password string) (err erro
 		return err
 	}
 
-	accountToCreate := model.Account{
-		Username:       username,
-		HashedPassword: hashedPassword,
-	}
-	createdAccountID, err := s.AccountRepo.Create(tx, accountToCreate)
+	account.HashedPassword = hashedPassword
+
+	createdAccountID, err := s.AccountRepo.Create(tx, account)
 	if err != nil {
-		log.Error().Err(err).Str("username", username).Msg("Failed to create an account")
+		log.Error().Err(err).Str("username", account.Username).Msg("Failed to create account")
 		return err
 	}
 
@@ -55,6 +54,6 @@ func (s Service) Create(tx *sqlx.Tx, username string, password string) (err erro
 		return err
 	}
 
-	log.Debug().Int("accountID", createdAccountID).Str("username", username).Msg("Account created")
+	log.Debug().Int("accountId", createdAccountID).Str("username", account.Username).Msg("Account created")
 	return nil
 }

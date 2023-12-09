@@ -12,43 +12,45 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-// loginRequest represents the request format for creating first device's tokens
-type loginRequest struct {
+// signInRequest represents the request format for creating first device's tokens
+type signInRequest struct {
 	// Account username
 	Username string `json:"username" validate:"required,alphanum"`
 	// Account password
 	Password string `json:"password" validate:"required,alphanum"`
-	// Device Fingerprint
-	Fingerprint string `json:"fingerprint"`
+	// Device name
+	DeviceName string `json:"deviceName"`
+	// Device fingerprint
+	Fingerprint string `json:"fingerprint" validate:"required"`
 }
 
-// loginResponse represents the reponse format for creating first device's tokens
-type loginResponse struct {
+// signInResponse represents the reponse format for creating first device's tokens
+type signInResponse struct {
 	// Refresh token for device
 	RefreshToken string `json:"refreshToken"`
 	// Access token for device
 	AccessToken string `json:"accessToken"`
 }
 
-// Login to account
-// @Summary Login to account
+// Sign in to account
+// @Summary Sign in to account
 // @Tags Tokens
 // @Accept json
 // @Produce json
 // @Param Produce-Language header string false "Language preference" default(en-US)
-// @Param request body loginRequest true "Account credentials and device fingerprint"
-// @Success 201 {object} loginResponse
+// @Param request body signInRequest true "Account credentials and device fingerprint"
+// @Success 201 {object} signInResponse
 // @Failure 400 {object} response.Error "Failed to encode request; Valitadion failed for request"
 // @Failure 401 {object} response.Error "Invalid login or password"
 // @Failure 500 {object} response.Error "Internal server error"
-// @Router /login [post]
-func (h *Handler) Login(c *gin.Context) {
+// @Router /auth/sign-in [post]
+func (h *Handler) SignIn(c *gin.Context) {
 	log.Debug().Msg("Loginning to account")
 
 	lang := c.MustGet("lang").(string)
 	localizer := i18n.NewLocalizer(h.Bundle, lang)
 
-	var request loginRequest
+	var request signInRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
 		log.Error().Err(err).Msg("Failed to encode request")
 		messageID := "FailedToEncodeRequest"
@@ -106,7 +108,7 @@ func (h *Handler) Login(c *gin.Context) {
 			})
 			return
 		} else {
-			messageID := "FailedToGenerateTokens"
+			messageID := "FailedToGetAccess"
 			message, errLoc := localizer.Localize(&i18n.LocalizeConfig{MessageID: messageID})
 			if errLoc != nil {
 				message = h.EngLocalizer.MustLocalize(&i18n.LocalizeConfig{MessageID: messageID})
@@ -120,7 +122,7 @@ func (h *Handler) Login(c *gin.Context) {
 	}
 
 	log.Debug().Msg("Tokens generated")
-	c.JSON(http.StatusCreated, loginResponse{
+	c.JSON(http.StatusCreated, signInResponse{
 		RefreshToken: refreshToken,
 		AccessToken:  accessToken,
 	})

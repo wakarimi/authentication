@@ -21,6 +21,7 @@ CREATE TABLE "devices"
 (
     "id"          SERIAL PRIMARY KEY,
     "account_id"  INTEGER NOT NULL,
+    "name"        TEXT NOT NULL,
     "fingerprint" TEXT,
     FOREIGN KEY ("account_id") REFERENCES "accounts" ("id")
 );

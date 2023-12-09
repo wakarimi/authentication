@@ -11,6 +11,7 @@ type Repo interface {
 	ReadByToken(tx *sqlx.Tx, token string) (refreshToken model.RefreshToken, err error)
 	Update(tx *sqlx.Tx, refreshTokenID int, refreshToken model.RefreshToken) (err error)
 	DeleteByDevice(tx *sqlx.Tx, deviceID int) (err error)
+	IsExistsByDevice(tx *sqlx.Tx, deviceID int) (exists bool, err error)
 }
 
 type Repository struct{}

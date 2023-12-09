@@ -52,7 +52,7 @@ func (s Service) GenerateRefreshTokenByCredentials(tx *sqlx.Tx, username string,
 		}
 		err = s.RefreshTokenRepo.DeleteByDevice(tx, foundDevice.ID)
 		if err != nil {
-			log.Error().Err(err).Str("username", username).Str("fingerprint", fingerprint).Msg("Failet to delete refresh token")
+			log.Error().Err(err).Str("username", username).Str("fingerprint", fingerprint).Msg("Failed to delete refresh token")
 			return "", err
 		}
 		err = s.DeviceService.Delete(tx, foundDevice.ID)

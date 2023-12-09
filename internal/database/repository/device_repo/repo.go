@@ -2,6 +2,7 @@ package device_repo
 
 import (
 	"authentication/internal/model"
+
 	"github.com/jmoiron/sqlx"
 )
 
@@ -13,8 +14,7 @@ type Repo interface {
 	IsExistsByAccountAndFingerprint(tx *sqlx.Tx, accountID int, fingerprint string) (isExists bool, err error)
 }
 
-type Repository struct {
-}
+type Repository struct{}
 
 func NewRepository() Repo {
 	return &Repository{}

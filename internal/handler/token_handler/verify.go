@@ -12,14 +12,14 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-// validateRequest represents the request format for validating access token
-type validateRequest struct {
-	// Access token for validation
+// verifyRequest represents the request format for verifying access token
+type verifyRequest struct {
+	// Access token for verifying
 	AccessToken string `json:"accessToken" validate:"required"`
 }
 
-// validateResponse represents the reponse format for validating access token
-type validateResponse struct {
+// verifyResponse represents the reponse format for verifying access token
+type verifyResponse struct {
 	// Token verification result
 	Valid bool `json:"valid"`
 	// ID of the account that the token belongs to
@@ -34,24 +34,24 @@ type validateResponse struct {
 	ExpiryAt *int64 `json:"expiryAt,omitempty"`
 }
 
-// Validates the token
-// @Summary Validates the token
+// Verify the token
+// @Summary Verify the token
 // @Tags Tokens
 // @Accept json
 // @Produce json
 // @Param Produce-Language header string false "Language preference" default(en-US)
-// @Param request body validateRequest true "The token to be validated"
-// @Success 201 {object} validateResponse
+// @Param request body verifyRequest true "The token to be validated"
+// @Success 201 {object} verifyResponse
 // @Failure 400 {object} response.Error "Failed to encode request; Valitadion failed for request"
 // @Failure 500 {object} response.Error "Internal server error"
-// @Router /tokens/validate [post]
-func (h *Handler) Validate(c *gin.Context) {
-	log.Debug().Msg("Validating an access token")
+// @Router /tokens/verify [post]
+func (h *Handler) Verify(c *gin.Context) {
+	log.Debug().Msg("Verifying an access token")
 
 	lang := c.MustGet("lang").(string)
 	localizer := i18n.NewLocalizer(h.Bundle, lang)
 
-	var request validateRequest
+	var request verifyRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
 		log.Error().Err(err).Msg("Failed to encode request")
 		messageID := "FailedToEncodeRequest"
@@ -99,7 +99,7 @@ func (h *Handler) Validate(c *gin.Context) {
 	})
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to generate tokens")
-		messageID := "FailedToValidateToken"
+		messageID := "FailedToVerifyToken"
 		message, errLoc := localizer.Localize(&i18n.LocalizeConfig{MessageID: messageID})
 		if errLoc != nil {
 			message = h.EngLocalizer.MustLocalize(&i18n.LocalizeConfig{MessageID: messageID})
@@ -113,7 +113,7 @@ func (h *Handler) Validate(c *gin.Context) {
 
 	log.Debug().Msg("Tokens validated")
 	if isValid {
-		c.JSON(http.StatusOK, validateResponse{
+		c.JSON(http.StatusOK, verifyResponse{
 			Valid:     isValid,
 			AccountID: &accessTokenPayload.AccountID,
 			DeviceID:  &accessTokenPayload.DeviceID,
@@ -122,7 +122,7 @@ func (h *Handler) Validate(c *gin.Context) {
 			ExpiryAt:  &accessTokenPayload.ExpiryAt,
 		})
 	} else {
-		c.JSON(http.StatusOK, validateResponse{
+		c.JSON(http.StatusOK, verifyResponse{
 			Valid: isValid,
 		})
 	}
