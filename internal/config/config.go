@@ -1,9 +1,12 @@
 package config
 
 import (
-	"github.com/rs/zerolog"
-	"github.com/spf13/viper"
+	"fmt"
 	"strings"
+
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
+	"github.com/spf13/viper"
 )
 
 type Configuration struct {
@@ -34,17 +37,38 @@ func LoadConfiguration() (config *Configuration, err error) {
 	viper.AutomaticEnv()
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
+	dbConnectionString := viper.GetString("WAKARIMI_AUTHENTICATION_DB_STRING")
+	if dbConnectionString == "" {
+		err = fmt.Errorf("database connection string not found")
+		log.Error().Err(err).Msg("Database connection string not found")
+		return nil, err
+	}
+
+	httpPort := viper.GetString("HTTP_SERVER_PORT")
+	if httpPort == "" {
+		httpPort = "8020"
+	}
+
+	refreshSecretKey := viper.GetString("REFRESH_SECRET_KEY")
+	if refreshSecretKey == "" {
+		return nil, fmt.Errorf("refresh secret key not found")
+	}
+
+	accessSecretKey := viper.GetString("ACCESS_SECRET_KEY")
+	if accessSecretKey == "" {
+		return nil, fmt.Errorf("access secret key not found")
+	}
+
 	config = &Configuration{
 		Database{
-			ConnectionString:
-			viper.GetString("WAKARIMI_AUTHENTICATION_DB_STRING"),
+			ConnectionString: dbConnectionString,
 		},
 		HttpServer{
-			Port: viper.GetString("HTTP_SERVER_PORT"),
+			Port: httpPort,
 		},
 		JwtConfiguration{
-			RefreshSecretKey: viper.GetString("REFRESH_SECRET_KEY"),
-			AccessSecretKey:  viper.GetString("ACCESS_SECRET_KEY"),
+			RefreshSecretKey: refreshSecretKey,
+			AccessSecretKey:  accessSecretKey,
 		},
 		Logger{
 			Level: loadLoggingLevel(),

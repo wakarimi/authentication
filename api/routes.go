@@ -2,18 +2,7 @@ package api
 
 import (
 	"authentication/internal/context"
-	"authentication/internal/database/repository/account_repo"
-	"authentication/internal/database/repository/account_role_repo"
-	"authentication/internal/database/repository/device_repo"
-	"authentication/internal/database/repository/refresh_token_repo"
-	"authentication/internal/handler/account_handler"
-	"authentication/internal/handler/token_handler"
 	"authentication/internal/middleware"
-	"authentication/internal/service"
-	"authentication/internal/service/account_role_service"
-	"authentication/internal/service/account_service"
-	"authentication/internal/service/device_service"
-	"authentication/internal/service/token_service"
 	"encoding/json"
 
 	"github.com/gin-gonic/gin"
@@ -37,38 +26,53 @@ func SetupRouter(ac *context.AppContext) (r *gin.Engine) {
 	bundle.LoadMessageFile("internal/locale/en-US.json")
 	bundle.LoadMessageFile("internal/locale/ru-RU.json")
 
-	accountRepo := account_repo.NewRepository()
-	accountRoleRepo := account_role_repo.NewRepository()
-	deviceRepo := device_repo.NewRepository()
-	refreshTokenRepo := refresh_token_repo.NewRepository()
+	// accountRepo := account_repo.NewRepository()
+	// accountRoleRepo := account_role_repo.NewRepository()
+	// deviceRepo := device_repo.NewRepository()
+	// refreshTokenRepo := refresh_token_repo.NewRepository()
 
-	txManager := service.NewTransactionManager(*ac.Db)
+	// txManager := service.NewTransactionManager(*ac.Db)
 
-	accountRoleService := account_role_service.NewService(accountRoleRepo)
-	accountService := account_service.NewService(accountRepo, *accountRoleService)
-	deviceService := device_service.NewService(deviceRepo, *accountService)
-	tokenService := token_service.NewService(refreshTokenRepo, ac.Config.RefreshSecretKey, ac.Config.AccessSecretKey, *accountService, *accountRoleService, *deviceService)
+	// accountRoleService := account_role_service.NewService(accountRoleRepo)
+	// accountService := account_service.NewService(accountRepo, *accountRoleService)
+	// deviceService := device_service.NewService(deviceRepo, *accountService)
+	// tokenService := token_service.NewService(refreshTokenRepo, ac.Config.RefreshSecretKey, ac.Config.AccessSecretKey, *accountService, *accountRoleService, *deviceService)
 
-	accountHandler := account_handler.NewHandler(*accountService, *accountRoleService, txManager, bundle)
-	tokenHandler := token_handler.NewHandler(*tokenService, txManager, bundle)
+	// accountHandler := account_handler.NewHandler(*accountService, *accountRoleService, txManager, bundle)
+	// tokenHandler := token_handler.NewHandler(*tokenService, txManager, bundle)
 
 	api := r.Group("/api")
 	{
 		api.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-		api.POST("/register", accountHandler.Create)
-
-		api.POST("/login", tokenHandler.Login)
+		auth := api.Group("auth")
+		{
+			auth.POST("/sign-in")
+			auth.POST("/sign-out")
+			auth.POST("/sign-out-all")
+		}
 
 		tokens := api.Group("/tokens")
 		{
-			tokens.POST("/refresh", tokenHandler.Refresh)
-			tokens.POST("/validate", tokenHandler.Validate)
+			tokens.POST("/refresh")
+			tokens.POST("/verify")
 		}
 
 		accounts := api.Group("accounts")
 		{
-			accounts.GET("/me", accountHandler.GetMe)
+			accounts.GET("/me")
+			accounts.GET("")
+			accounts.POST("/change-password")
+			accounts.POST("/sign-up")
+
+			account := accounts.Group(":accountId")
+			{
+				roles := account.Group("roles")
+				{
+					roles.POST("")
+					roles.DELETE("")
+				}
+			}
 		}
 	}
 

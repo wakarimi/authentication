@@ -15,7 +15,7 @@ import (
 )
 
 // @title Wakarimi Authentication API
-// @version 0.5
+// @version 0.6
 
 // @contact.name Dmitry Kolesnikov (Zalimannard)
 // @contact.email zalimannard@mail.ru
