@@ -5,7 +5,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func (*Repository) IsExistsByToken(tx *sqlx.Tx, token string) (isExists bool, err error) {
+func (r Repository) IsExistsByToken(tx *sqlx.Tx, token string) (isExists bool, err error) {
 	log.Debug().Msg("Checking refresh token existence")
 
 	query := `

@@ -5,7 +5,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func (*Repository) IsExistsByDevice(tx *sqlx.Tx, deviceID int) (isExists bool, err error) {
+func (r Repository) IsExistsByDevice(tx *sqlx.Tx, deviceID int) (isExists bool, err error) {
 	log.Debug().Int("deviceId", deviceID).Msg("Checking refresh token for device existence")
 
 	query := `

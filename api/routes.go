@@ -60,7 +60,7 @@ func SetupRouter(ac *context.AppContext) (r *gin.Engine) {
 		{
 			auth.POST("/sign-in", tokenHandler.SignIn)
 			auth.POST("/sign-out", tokenHandler.SignOut)
-			auth.POST("/sign-out-all")
+			auth.POST("/sign-out-all", tokenHandler.SignOutAll)
 		}
 
 		tokens := api.Group("/tokens")
