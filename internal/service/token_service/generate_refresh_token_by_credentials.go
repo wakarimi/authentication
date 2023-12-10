@@ -5,12 +5,12 @@ import (
 	"authentication/internal/model"
 	"authentication/internal/service/constants"
 	token_payload "authentication/internal/service/token_service/token_payload"
+	"authentication/internal/utils"
 	"time"
 
 	"github.com/form3tech-oss/jwt-go"
 	"github.com/jmoiron/sqlx"
 	"github.com/rs/zerolog/log"
-	"golang.org/x/crypto/bcrypt"
 )
 
 func (s Service) GenerateRefreshTokenByCredentials(tx *sqlx.Tx, username string, password string, device model.Device) (refreshToken string, err error) {
@@ -32,7 +32,7 @@ func (s Service) GenerateRefreshTokenByCredentials(tx *sqlx.Tx, username string,
 		log.Error().Err(err).Str("username", username).Msg("Failed to get account by username")
 		return "", err
 	}
-	isMatch := CheckPasswordHash(password, account.HashedPassword)
+	isMatch := utils.CheckPasswordHash(password, account.HashedPassword)
 	if !isMatch {
 		err := errors.Unauthorized{Message: "invalid username or password"}
 		log.Error().Err(err).Str("username", username).Msg("Invalid username or password")
@@ -109,9 +109,4 @@ func (s Service) GenerateRefreshTokenByCredentials(tx *sqlx.Tx, username string,
 	}
 
 	return tokenString, nil
-}
-
-func CheckPasswordHash(password string, hash string) (isMatch bool) {
-	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
-	return err == nil
 }

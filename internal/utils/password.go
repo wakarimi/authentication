@@ -1,11 +1,11 @@
-package account_service
+package utils
 
 import (
 	"github.com/rs/zerolog/log"
 	"golang.org/x/crypto/bcrypt"
 )
 
-func (s Service) HashPassword(password string) (hashedPassword string, err error) {
+func HashPassword(password string) (hashedPassword string, err error) {
 	log.Debug().Msg("Password hashing")
 
 	hashedBytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
@@ -17,4 +17,11 @@ func (s Service) HashPassword(password string) (hashedPassword string, err error
 
 	log.Debug().Msg("Password hashed")
 	return hashedPassword, nil
+}
+
+func CheckPasswordHash(password string, hash string) (isMatch bool) {
+	log.Debug().Msg("Checking password hash")
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	log.Debug().Bool("isMatch", err == nil).Msg("Password hash checked")
+	return err == nil
 }

@@ -3,6 +3,7 @@ package account_service
 import (
 	"authentication/internal/errors"
 	"authentication/internal/model"
+	"authentication/internal/utils"
 	"fmt"
 
 	"github.com/jmoiron/sqlx"
@@ -23,7 +24,7 @@ func (s Service) Create(tx *sqlx.Tx, account model.Account, password string) (er
 		return err
 	}
 
-	hashedPassword, err := s.HashPassword(password)
+	hashedPassword, err := utils.HashPassword(password)
 	if err != nil {
 		log.Error().Msg("Failed to hash password")
 		return err

@@ -43,5 +43,8 @@
   },
   "FailedToSignOut": {
     "other": "Failed to sign out"
+  },
+  "InvalidOldPassword": {
+    "other": "Invalid old password"
   }
 }

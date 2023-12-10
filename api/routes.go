@@ -49,7 +49,7 @@ func SetupRouter(ac *context.AppContext) (r *gin.Engine) {
 	deviceService := device_service.NewService(deviceRepo, *accountService)
 	tokenService := token_service.NewService(refreshTokenRepo, ac.Config.RefreshSecretKey, ac.Config.AccessSecretKey, *accountService, *accountRoleService, *deviceService)
 
-	accountHandler := account_handler.NewHandler(*accountService, *accountRoleService, txManager, bundle)
+	accountHandler := account_handler.NewHandler(*accountService, *accountRoleService, *tokenService, txManager, bundle)
 	tokenHandler := token_handler.NewHandler(*tokenService, txManager, bundle)
 
 	api := r.Group("/api")
@@ -74,7 +74,7 @@ func SetupRouter(ac *context.AppContext) (r *gin.Engine) {
 			accounts.GET("/me", accountHandler.GetMe)
 			accounts.GET("")
 			accounts.POST("/sign-up", accountHandler.SignUp)
-			accounts.PATCH("/change-password")
+			accounts.PATCH("/change-password", accountHandler.ChangePassword)
 
 			account := accounts.Group(":accountId")
 			{

@@ -23,7 +23,7 @@ type getMeResponse struct {
 	Roles []string `json:"roles"`
 }
 
-// Request for information about the requester's account
+// GetMe
 // @Summary Request for information about the requester's account
 // @Tags Accounts
 // @Accept json
