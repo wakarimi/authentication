@@ -5,23 +5,23 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func (*Repository) IsExistsByDevice(tx *sqlx.Tx, deviceID int) (isExists bool, err error) {
-	log.Debug().Int("deviceId", deviceID).Msg("Checking refresh token for device existence")
+func (*Repository) IsExistsByToken(tx *sqlx.Tx, token string) (isExists bool, err error) {
+	log.Debug().Msg("Checking refresh token existence")
 
 	query := `
 		SELECT EXISTS (
 			SELECT 1 
 			FROM refresh_tokens
-			WHERE device_id = :device_id
+			WHERE token = :token
 		)
 	`
 	args := map[string]interface{}{
-		"device_id": deviceID,
+		"token": token,
 	}
 
 	stmt, err := tx.PrepareNamed(query)
 	if err != nil {
-		log.Error().Int("deviceId", deviceID).Msg("Failed to prepare query")
+		log.Error().Msg("Failed to prepare query")
 		return false, err
 	}
 	defer func(stmt *sqlx.NamedStmt) {
@@ -33,10 +33,10 @@ func (*Repository) IsExistsByDevice(tx *sqlx.Tx, deviceID int) (isExists bool, e
 
 	err = stmt.Get(&isExists, args)
 	if err != nil {
-		log.Error().Err(err).Int("deviceId", deviceID).Msg("Failed to check refresh token existence")
+		log.Error().Err(err).Msg("Failed to check refresh token existence")
 		return false, err
 	}
 
-	log.Debug().Int("deviceId", deviceID).Bool("isExists", isExists).Msg("Token existence by device checked")
+	log.Debug().Bool("isExists", isExists).Msg("Token existence checked")
 	return isExists, nil
 }

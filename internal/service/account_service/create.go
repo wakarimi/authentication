@@ -10,7 +10,7 @@ import (
 )
 
 func (s Service) Create(tx *sqlx.Tx, account model.Account, password string) (err error) {
-	log.Debug().Str("usernme", account.Username).Msg("Account creation")
+	log.Debug().Str("username", account.Username).Msg("Account creation")
 
 	isUsernameTaken, err := s.IsUsernameTaken(tx, account.Username)
 	if err != nil {

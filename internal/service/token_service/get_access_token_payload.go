@@ -35,6 +35,7 @@ func (s Service) GetAccessTokenPayload(accessToken string) (accessTokenPayload t
 
 	accessTokenPayload.AccountID = int(claims["accountId"].(float64))
 	accessTokenPayload.DeviceID = int(claims["deviceId"].(float64))
+	accessTokenPayload.RefreshTokenID = int(claims["refreshTokenId"].(float64))
 	accessTokenPayload.Roles = rolesSlice
 	accessTokenPayload.IssuedAt = int64(claims["issuedAt"].(float64))
 	accessTokenPayload.ExpiryAt = int64(claims["expiryAt"].(float64))

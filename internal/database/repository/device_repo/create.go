@@ -11,8 +11,8 @@ func (r Repository) Create(tx *sqlx.Tx, device model.Device) (deviceID int, err 
 	log.Debug().Int("accountId", device.AccountID).Str("fingerprint", device.Fingerprint).Msg("Creating device")
 
 	query := `
-		INSERT INTO devices(account_id, fingerprint)
-		VALUES (:account_id, :fingerprint)
+		INSERT INTO devices(account_id, name, fingerprint)
+		VALUES (:account_id, :name, :fingerprint)
 		RETURNING id
 	`
 	rows, err := tx.NamedQuery(query, device)

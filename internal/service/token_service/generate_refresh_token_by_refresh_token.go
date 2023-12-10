@@ -5,6 +5,7 @@ import (
 	"authentication/internal/model"
 	"authentication/internal/service/constants"
 	token_payload "authentication/internal/service/token_service/token_payload"
+	"fmt"
 	"time"
 
 	"github.com/form3tech-oss/jwt-go"
@@ -15,7 +16,7 @@ import (
 func (s Service) GenerateRefreshTokenByRefreshToken(tx *sqlx.Tx, oldRefreshToken string) (newRefreshToken string, err error) {
 	isValid, err := s.IsRefreshTokenValid(oldRefreshToken)
 	if err != nil {
-		log.Error().Err(err).Msg("Failet to check refresh token")
+		log.Error().Err(err).Msg("Failed to check refresh token")
 		return "", err
 	}
 	if !isValid {
@@ -24,9 +25,14 @@ func (s Service) GenerateRefreshTokenByRefreshToken(tx *sqlx.Tx, oldRefreshToken
 		return "", err
 	}
 
-	oldTokenFromDatabase, err := s.RefreshTokenRepo.ReadByToken(tx, oldRefreshToken)
+	isOldRefreshTokenExists, err := s.RefreshTokenRepo.IsExistsByToken(tx, oldRefreshToken)
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to read token")
+		return "", err
+	}
+	if !isOldRefreshTokenExists {
+		err = errors.NotFound{Resource: fmt.Sprintf("refresh token")}
+		log.Error().Err(err).Msg("Refresh token not found")
 		return "", err
 	}
 
@@ -63,9 +69,15 @@ func (s Service) GenerateRefreshTokenByRefreshToken(tx *sqlx.Tx, oldRefreshToken
 		ExpiresAt: time.Unix(payload.ExpiryAt, 0),
 	}
 
-	err = s.RefreshTokenRepo.Update(tx, oldTokenFromDatabase.ID, tokenForDatabase)
+	err = s.DeleteByDevice(tx, oldRefreshTokenPayload.DeviceID)
 	if err != nil {
-		log.Error().Err(err).Msg("Failed to update refresh token in database")
+		log.Error().Err(err).Msg("Failed to delete refresh token from database")
+		return "", err
+	}
+
+	_, err = s.RefreshTokenRepo.Create(tx, tokenForDatabase)
+	if err != nil {
+		log.Error().Err(err).Msg("Failed to create refresh token in database")
 		return "", err
 	}
 

@@ -85,7 +85,7 @@ func (h *Handler) Verify(c *gin.Context) {
 	var isValid bool
 	var accessTokenPayload token_payload.AccessToken
 	err := h.TransactionManager.WithTransaction(func(tx *sqlx.Tx) (err error) {
-		isValid, err = h.TokenService.IsAccessTokenValid(request.AccessToken)
+		isValid, err = h.TokenService.IsAccessTokenValid(tx, request.AccessToken)
 		if err != nil {
 			return err
 		}

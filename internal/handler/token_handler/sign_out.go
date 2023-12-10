@@ -12,8 +12,8 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-// Sign out from the account
-// @Summary Sign out from the account
+// SignOut from the account
+// @Summary SignOut from the account
 // @Tags Tokens
 // @Accept json
 // @Produce json

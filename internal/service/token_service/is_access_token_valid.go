@@ -1,12 +1,13 @@
 package token_service
 
 import (
+	"github.com/jmoiron/sqlx"
 	"time"
 
 	"github.com/rs/zerolog/log"
 )
 
-func (s Service) IsAccessTokenValid(accessToken string) (isValid bool, err error) {
+func (s Service) IsAccessTokenValid(tx *sqlx.Tx, accessToken string) (isValid bool, err error) {
 	log.Debug().Msg("Checking the validity of the access token")
 
 	parsedAccessToken, err := s.ParseAccessToken(accessToken)
@@ -26,6 +27,14 @@ func (s Service) IsAccessTokenValid(accessToken string) (isValid bool, err error
 		}
 		if accessTokenPayload.ExpiryAt < time.Now().Unix() {
 			isExpired = true
+		}
+		isRefreshTokenExists, err := s.RefreshTokenRepo.IsExists(tx, accessTokenPayload.RefreshTokenID)
+		if err != nil {
+			return false, err
+		}
+		if !isRefreshTokenExists {
+			log.Info().Msg("Unknown origin of the token")
+			return false, nil
 		}
 	}
 

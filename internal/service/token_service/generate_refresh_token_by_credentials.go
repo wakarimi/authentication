@@ -13,17 +13,17 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func (s Service) GenerateRefreshTokenByCredentials(tx *sqlx.Tx, username string, password string, fingerprint string) (refreshToken string, err error) {
-	log.Debug().Str("username", username).Str("fingerprint", fingerprint).Msg("Generating refresh token by credentials")
+func (s Service) GenerateRefreshTokenByCredentials(tx *sqlx.Tx, username string, password string, device model.Device) (refreshToken string, err error) {
+	log.Debug().Str("username", username).Str("deviceName", device.Name).Msg("Generating refresh token by credentials")
 
 	isUsernameExists, err := s.AccountService.IsUsernameTaken(tx, username)
 	if err != nil {
-		log.Error().Err(err).Str("username", username).Str("fingerprint", fingerprint).Msg("Failed to check account by username existence")
+		log.Error().Err(err).Str("username", username).Str("fingerprint", device.Name).Msg("Failed to check account by username existence")
 		return "", err
 	}
 	if !isUsernameExists {
 		err := errors.Unauthorized{Message: "invalid username or password"}
-		log.Error().Err(err).Str("ureaname", username).Msg("Invalid username or password")
+		log.Error().Err(err).Str("username", username).Msg("Invalid username or password")
 		return "", err
 	}
 
@@ -35,40 +35,37 @@ func (s Service) GenerateRefreshTokenByCredentials(tx *sqlx.Tx, username string,
 	isMatch := CheckPasswordHash(password, account.HashedPassword)
 	if !isMatch {
 		err := errors.Unauthorized{Message: "invalid username or password"}
-		log.Error().Err(err).Str("ureaname", username).Msg("Invalid username or password")
+		log.Error().Err(err).Str("username", username).Msg("Invalid username or password")
 		return "", err
 	}
 
-	isExistsByAccountAndFingerprint, err := s.DeviceService.IsExistsByAccountAndFingerprint(tx, account.ID, fingerprint)
+	isExistsByAccountAndFingerprint, err := s.DeviceService.IsExistsByAccountAndFingerprint(tx, account.ID, device.Fingerprint)
 	if err != nil {
-		log.Error().Err(err).Str("ureaname", username).Str("fingerprint", fingerprint).Msg("Failed to check device existence")
+		log.Error().Err(err).Str("username", username).Str("deviceName", device.Name).Msg("Failed to check device existence")
 		return "", err
 	}
 	if isExistsByAccountAndFingerprint {
-		foundDevice, err := s.DeviceService.GetByAccountAndFingerprint(tx, account.ID, fingerprint)
+		foundDevice, err := s.DeviceService.GetByAccountAndFingerprint(tx, account.ID, device.Fingerprint)
 		if err != nil {
-			log.Error().Err(err).Str("ureaname", username).Str("fingerprint", fingerprint).Msg("Failed to get device")
+			log.Error().Err(err).Str("username", username).Str("deviceName", device.Name).Msg("Failed to get device")
 			return "", err
 		}
 		err = s.RefreshTokenRepo.DeleteByDevice(tx, foundDevice.ID)
 		if err != nil {
-			log.Error().Err(err).Str("username", username).Str("fingerprint", fingerprint).Msg("Failed to delete refresh token")
+			log.Error().Err(err).Str("username", username).Str("deviceName", device.Name).Msg("Failed to delete refresh token")
 			return "", err
 		}
 		err = s.DeviceService.Delete(tx, foundDevice.ID)
 		if err != nil {
-			log.Error().Err(err).Str("ureaname", username).Str("fingerprint", fingerprint).Msg("Failed to delete device")
+			log.Error().Err(err).Str("username", username).Str("deviceName", device.Name).Msg("Failed to delete device")
 			return "", err
 		}
 	}
 
-	deviceToCreate := model.Device{
-		AccountID:   account.ID,
-		Fingerprint: fingerprint,
-	}
-	createdDeviceID, err := s.DeviceService.Create(tx, deviceToCreate)
+	device.AccountID = account.ID
+	createdDeviceID, err := s.DeviceService.Create(tx, device)
 	if err != nil {
-		log.Error().Err(err).Str("ureaname", username).Str("fingerprint", fingerprint).Msg("Failed to create device")
+		log.Error().Err(err).Str("username", username).Str("deviceName", device.Name).Msg("Failed to create device")
 		return "", err
 	}
 

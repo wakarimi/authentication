@@ -74,10 +74,12 @@ func SetupRouter(ac *context.AppContext) (r *gin.Engine) {
 			accounts.GET("/me", accountHandler.GetMe)
 			accounts.GET("")
 			accounts.POST("/sign-up", accountHandler.SignUp)
-			accounts.POST("/change-password")
+			accounts.PATCH("/change-password")
 
 			account := accounts.Group(":accountId")
 			{
+				account.DELETE("")
+
 				roles := account.Group("roles")
 				{
 					roles.POST("")

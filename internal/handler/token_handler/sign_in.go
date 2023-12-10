@@ -3,6 +3,7 @@ package token_handler
 import (
 	"authentication/internal/errors"
 	"authentication/internal/handler/response"
+	"authentication/internal/model"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -24,7 +25,7 @@ type signInRequest struct {
 	Fingerprint string `json:"fingerprint" validate:"required"`
 }
 
-// signInResponse represents the reponse format for creating first device's tokens
+// signInResponse represents the response format for creating first device's tokens
 type signInResponse struct {
 	// Refresh token for device
 	RefreshToken string `json:"refreshToken"`
@@ -32,20 +33,20 @@ type signInResponse struct {
 	AccessToken string `json:"accessToken"`
 }
 
-// Sign in to account
-// @Summary Sign in to account
+// SignIn to account
+// @Summary SignIn to account
 // @Tags Tokens
 // @Accept json
 // @Produce json
 // @Param Produce-Language header string false "Language preference" default(en-US)
 // @Param request body signInRequest true "Account credentials and device fingerprint"
 // @Success 201 {object} signInResponse
-// @Failure 400 {object} response.Error "Failed to encode request; Valitadion failed for request"
+// @Failure 400 {object} response.Error "Failed to encode request; Validation failed for request"
 // @Failure 401 {object} response.Error "Invalid login or password"
 // @Failure 500 {object} response.Error "Internal server error"
 // @Router /auth/sign-in [post]
 func (h *Handler) SignIn(c *gin.Context) {
-	log.Debug().Msg("Loginning to account")
+	log.Debug().Msg("Logging in to your account")
 
 	lang := c.MustGet("lang").(string)
 	localizer := i18n.NewLocalizer(h.Bundle, lang)
@@ -84,7 +85,11 @@ func (h *Handler) SignIn(c *gin.Context) {
 	var refreshToken string
 	var accessToken string
 	err := h.TransactionManager.WithTransaction(func(tx *sqlx.Tx) (err error) {
-		refreshToken, err = h.TokenService.GenerateRefreshTokenByCredentials(tx, request.Username, request.Password, request.Fingerprint)
+		device := model.Device{
+			Name:        request.DeviceName,
+			Fingerprint: request.Fingerprint,
+		}
+		refreshToken, err = h.TokenService.GenerateRefreshTokenByCredentials(tx, request.Username, request.Password, device)
 		if err != nil {
 			return err
 		}

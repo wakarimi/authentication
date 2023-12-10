@@ -25,6 +25,12 @@ func (s Service) GenerateAccessToken(tx *sqlx.Tx, refreshToken string) (accessTo
 		return "", err
 	}
 
+	refreshTokenFromDatabase, err := s.RefreshTokenRepo.ReadByToken(tx, refreshToken)
+	if err != nil {
+		log.Error().Err(err).Msg("Failed to read refresh token from database")
+		return "", err
+	}
+
 	refreshTokenPayload, err := s.GetRefreshTokenPayload(refreshToken)
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to get refresh token payload")
@@ -42,18 +48,20 @@ func (s Service) GenerateAccessToken(tx *sqlx.Tx, refreshToken string) (accessTo
 	}
 
 	payload := token_payload.AccessToken{
-		AccountID: refreshTokenPayload.AccountID,
-		DeviceID:  refreshTokenPayload.AccountID,
-		Roles:     roles,
-		IssuedAt:  time.Now().Unix(),
-		ExpiryAt:  time.Now().Add(constants.AccessTokenDuration).Unix(),
+		AccountID:      refreshTokenPayload.AccountID,
+		DeviceID:       refreshTokenPayload.DeviceID,
+		RefreshTokenID: refreshTokenFromDatabase.ID,
+		Roles:          roles,
+		IssuedAt:       time.Now().Unix(),
+		ExpiryAt:       time.Now().Add(constants.AccessTokenDuration).Unix(),
 	}
 	claims := jwt.MapClaims{
-		"accountId": payload.AccountID,
-		"deviceId":  payload.DeviceID,
-		"roles":     payload.Roles,
-		"issuedAt":  payload.IssuedAt,
-		"expiryAt":  payload.ExpiryAt,
+		"accountId":      payload.AccountID,
+		"deviceId":       payload.DeviceID,
+		"refreshTokenId": payload.RefreshTokenID,
+		"roles":          payload.Roles,
+		"issuedAt":       payload.IssuedAt,
+		"expiryAt":       payload.ExpiryAt,
 	}
 
 	accessTokenByte := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
