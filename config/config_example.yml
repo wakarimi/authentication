@@ -1,0 +1,23 @@
+app:
+  name: "wakarimi-authentication" # Optional
+  env: "dev" # Optional
+  version: "v1" # Optional
+  refresh_key: "qwerty01"
+  access_key: "qwerty02"
+
+http:
+  host: "localhost"
+  port: "9000"
+  read_timeout: "1s" # Optional
+  write_timeout: "1s" # Optional
+
+db:
+  host: "localhost"
+  port: "5432"
+  name: "dbname"
+  user: "dbuser"
+  password: "dbpassword"
+  read_timeout: "1s" # Optional
+  write_timeout: "1s" # Optional
+  charset: "UTF-8" # Optional
+
