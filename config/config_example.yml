@@ -1,15 +1,16 @@
 app:
-  name: "wakarimi-authentication" # Optional
-  env: "dev" # Optional
-  version: "v1" # Optional
+  # name: "" # Optional, default: "wakarimi-authentication"
+  # env: "" # Optional, default: "dev"
+  # logging_level: "" # Optional, default: "INFO"
+  # version: "" # Optional, default: "v1"
   refresh_key: "qwerty01"
   access_key: "qwerty02"
 
 http:
   host: "localhost"
-  port: "9000"
-  read_timeout: "1s" # Optional
-  write_timeout: "1s" # Optional
+  port: "8020"
+  # read_timeout: "" # Optional, default: "1s"
+  # write_timeout: "" # Optional, default: "1s"
 
 db:
   host: "localhost"
@@ -17,7 +18,8 @@ db:
   name: "dbname"
   user: "dbuser"
   password: "dbpassword"
-  read_timeout: "1s" # Optional
-  write_timeout: "1s" # Optional
-  charset: "UTF-8" # Optional
+  # read_timeout: "" # Optional, default: "1s"
+  # write_timeout: "" # Optional, default: "1s"
+  # charset: "" # Optional, default: "UTF-8"
+  # migration_path: "" # Optional, default: "./internal/store/pgsqlx_repo/migration"
 

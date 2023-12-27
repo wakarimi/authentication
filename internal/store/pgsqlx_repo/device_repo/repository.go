@@ -1,4 +1,4 @@
-package account_repo
+package device_repo
 
 import (
 	"github.com/jmoiron/sqlx"

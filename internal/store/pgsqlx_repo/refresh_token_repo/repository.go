@@ -1,4 +1,4 @@
-package account_repo
+package refresh_token_repo
 
 import (
 	"github.com/jmoiron/sqlx"

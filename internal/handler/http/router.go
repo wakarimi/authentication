@@ -12,12 +12,13 @@ type HandlerRouter interface {
 }
 
 type Router struct {
-	router *gin.Engine
+	engine *gin.Engine
 }
 
 func NewRouter() *Router {
+	gin.SetMode(gin.ReleaseMode)
 	return &Router{
-		router: gin.New(),
+		engine: gin.New(),
 	}
 }
 
@@ -27,9 +28,13 @@ func (r *Router) WithSwagger() *Router {
 }
 
 func (r *Router) WithHandler(h HandlerRouter, logger zerolog.Logger) *Router {
-	api := r.router.Group("/api")
+	api := r.engine.Group("/api")
 
 	h.AddRoutes(api)
 
 	return r
+}
+
+func (r *Router) Engine() *gin.Engine {
+	return r.engine
 }

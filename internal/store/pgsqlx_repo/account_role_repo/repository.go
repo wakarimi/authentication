@@ -1,4 +1,4 @@
-package account_repo
+package account_role_repo
 
 import (
 	"github.com/jmoiron/sqlx"
