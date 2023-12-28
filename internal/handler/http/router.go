@@ -28,7 +28,7 @@ func (r *Router) WithSwagger() *Router {
 }
 
 func (r *Router) WithHandler(h HandlerRouter, logger zerolog.Logger) *Router {
-	api := r.engine.Group("/api")
+	api := r.engine.Group("/api/" + h.GetVersion())
 
 	h.AddRoutes(api)
 
