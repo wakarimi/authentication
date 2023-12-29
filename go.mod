@@ -133,6 +133,7 @@ require (
 	github.com/mutecomm/go-sqlcipher/v4 v4.4.2 // indirect
 	github.com/nakagami/firebirdsql v0.9.6 // indirect
 	github.com/neo4j/neo4j-go-driver v1.8.3 // indirect
+	github.com/nicksnyder/go-i18n/v2 v2.3.0 // indirect
 	github.com/pelletier/go-toml/v2 v2.1.1 // indirect
 	github.com/pierrec/lz4/v4 v4.1.19 // indirect
 	github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8 // indirect

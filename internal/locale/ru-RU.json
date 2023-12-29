@@ -1,0 +1,41 @@
+{
+  "InvalidHeaderFormat": {
+    "other": "Неверный формат запроса"
+  },
+  "InvalidUrlParameterFormat": {
+    "other": "Неверный формат параметра запроса"
+  },
+  "FailedToEncodeRequest": {
+    "other": "Не удалось распознать запрос"
+  },
+  "ValidationFailedForRequest": {
+    "other": "Неверные параметры запроса"
+  },
+  "NotFound": {
+    "other": "Запрашиваемый элемент не найден"
+  },
+  "UsernameIsAlreadyTaken": {
+    "other": "Имя пользователя уже занято"
+  },
+  "FailedToCreateAccount": {
+    "other": "Не удалось создать аккаунт"
+  },
+  "InvalidUsernameOrPassword": {
+    "other": "Неверное имя пользователя или пароль"
+  },
+  "FailedToGenerateTokens": {
+    "other": "Не удалось сгенерировать токены"
+  },
+  "InvalidPreviousToken": {
+    "other": "Неверный предоставленный токен"
+  },
+  "FailedToValidateToken": {
+    "other": "Не удалось проверить токен"
+  },
+  "AccountNotFound": {
+    "other": "Аккаунт не найден"
+  },
+  "FailedToGetAccount": {
+    "other": "Не удалось получить аккаунт"
+  }
+}

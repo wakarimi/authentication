@@ -1,9 +1,14 @@
 package app
 
 import (
+	"encoding/json"
 	"github.com/gin-gonic/gin"
+	"github.com/nicksnyder/go-i18n/v2/i18n"
+	"github.com/rs/zerolog/log"
+	"golang.org/x/text/language"
 	"wakarimi-authentication/internal/config"
 	"wakarimi-authentication/internal/handler"
+	"wakarimi-authentication/internal/middleware"
 	"wakarimi-authentication/internal/service"
 	"wakarimi-authentication/internal/service/access_token_service"
 	"wakarimi-authentication/internal/service/account_role_service"
@@ -47,10 +52,16 @@ func New(cfg config.Config) (*App, error) {
 	useCase := use_case.New(transactor, accessTokenService, accountService,
 		accountRoleService, deviceService, refreshTokenService)
 
-	application.handler = handler.New(useCase)
+	bundle := i18n.NewBundle(language.English)
+	bundle.RegisterUnmarshalFunc("toml", json.Unmarshal)
+	bundle.LoadMessageFile("internal/locale/en-US.json")
+	bundle.LoadMessageFile("internal/locale/ru-RU.json")
+	application.handler = handler.New(useCase, *bundle)
 
 	gin.SetMode(gin.ReleaseMode)
 	application.router = gin.New()
+	application.router.Use(middleware.ZerologMiddleware(log.Logger))
+	application.router.Use(middleware.ProduceLanguageMiddleware())
 	application.RegisterRoutes()
 
 	return application, nil

@@ -1,14 +1,22 @@
 package handler
 
+import "github.com/nicksnyder/go-i18n/v2/i18n"
+
 type useCase interface {
+	SignUp(username string, password string) error
 }
 
 type Handler struct {
-	useCase useCase
+	useCase      useCase
+	bundle       i18n.Bundle
+	engLocalizer i18n.Localizer
 }
 
-func New(useCase useCase) *Handler {
+func New(useCase useCase,
+	bundle i18n.Bundle) *Handler {
 	return &Handler{
-		useCase: useCase,
+		useCase:      useCase,
+		bundle:       bundle,
+		engLocalizer: *i18n.NewLocalizer(&bundle, "en_US"),
 	}
 }
