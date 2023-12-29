@@ -1,8 +1,8 @@
-package refresh_token_service
+package access_token_service
 
 type Service struct {
 }
 
-func NewService() *Service {
+func New() *Service {
 	return &Service{}
 }

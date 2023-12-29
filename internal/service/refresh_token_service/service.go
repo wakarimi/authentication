@@ -6,7 +6,7 @@ type Service struct {
 	refreshTokenRepo refresh_token.Repository
 }
 
-func NewService(refreshTokenRepo refresh_token.Repository) *Service {
+func New(refreshTokenRepo refresh_token.Repository) *Service {
 	return &Service{
 		refreshTokenRepo: refreshTokenRepo,
 	}

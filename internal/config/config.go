@@ -16,10 +16,7 @@ type AppConfig struct {
 }
 
 type HTTPConfig struct {
-	Host         string
-	Port         string
-	ReadTimeout  time.Duration
-	WriteTimeout time.Duration
+	Port int
 }
 
 type ThirdPartyService struct {
@@ -28,7 +25,7 @@ type ThirdPartyService struct {
 
 type DBConfig struct {
 	Host          string
-	Port          string
+	Port          int
 	DBName        string
 	User          string
 	Password      string
@@ -46,7 +43,7 @@ type Config struct {
 	ApiGateway ThirdPartyService
 }
 
-func NewConfig(filePath string) (config Config, err error) {
+func New(filePath string) (config Config, err error) {
 	viper.SetConfigFile(filePath)
 
 	err = viper.ReadInConfig()
@@ -63,6 +60,7 @@ func NewConfig(filePath string) (config Config, err error) {
 	viper.SetDefault("db.read_timeout", "1s")
 	viper.SetDefault("db.write_timeout", "1s")
 	viper.SetDefault("db.charset", "UTF-8")
+	viper.SetDefault("db.migration_path", "internal/storage/migration")
 
 	config = Config{
 		App: AppConfig{
@@ -75,15 +73,12 @@ func NewConfig(filePath string) (config Config, err error) {
 		},
 
 		HTTP: HTTPConfig{
-			Host:         viper.GetString("http.host"),
-			Port:         viper.GetString("http.port"),
-			ReadTimeout:  viper.GetDuration("http.read_timeout"),
-			WriteTimeout: viper.GetDuration("http.write_timeout"),
+			Port: viper.GetInt("http.port"),
 		},
 
 		DB: DBConfig{
 			Host:          viper.GetString("db.host"),
-			Port:          viper.GetString("db.port"),
+			Port:          viper.GetInt("db.port"),
 			DBName:        viper.GetString("db.name"),
 			User:          viper.GetString("db.user"),
 			Password:      viper.GetString("db.password"),

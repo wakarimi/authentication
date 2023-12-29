@@ -1,19 +1,28 @@
 package main
 
 import (
+	"flag"
 	"github.com/rs/zerolog/log"
-	"wakarimi-authentication/internal/app"
+	"wakarimi-authentication/internal/config"
+	"wakarimi-authentication/internal/pkg/app"
 )
 
-var configFilePath string
-
 func main() {
-	configFilePath = "./config/config.yml"
+	configFilePath := flag.String("config", "config/config.yml", "Path to the config file")
+	flag.Parse()
 
-	a, err := app.NewApp(configFilePath)
+	cfg, err := config.New(*configFilePath)
 	if err != nil {
-		log.Fatal().Err(err).Msg("Failed to create app")
+		log.Fatal().Err(err).Msg("Failed to read config")
 	}
 
-	a.StartHTTPServer()
+	application, err := app.New(cfg)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Failed to create application")
+	}
+
+	err = application.StartHTTPServer(cfg.HTTP)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Failed to start HTTP server")
+	}
 }

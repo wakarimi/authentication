@@ -6,7 +6,7 @@ type Service struct {
 	deviceRepo device.Repository
 }
 
-func NewService(deviceRepo device.Repository) *Service {
+func New(deviceRepo device.Repository) *Service {
 	return &Service{
 		deviceRepo: deviceRepo,
 	}

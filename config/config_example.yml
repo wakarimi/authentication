@@ -7,10 +7,7 @@ app:
   access_key: "qwerty02"
 
 http:
-  host: "localhost"
-  port: "8020"
-  # read_timeout: "" # Optional, default: "1s"
-  # write_timeout: "" # Optional, default: "1s"
+  port: 8020
 
 db:
   host: "localhost"
@@ -21,5 +18,5 @@ db:
   # read_timeout: "" # Optional, default: "1s"
   # write_timeout: "" # Optional, default: "1s"
   # charset: "" # Optional, default: "UTF-8"
-  # migration_path: "" # Optional, default: "./internal/store/pgsqlx_repo/migration"
+  # migration_path: "" # Optional, default: "internal/storage/migration"
 

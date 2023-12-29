@@ -6,7 +6,7 @@ type Service struct {
 	accountRoleRepo account_role.Repository
 }
 
-func NewService(accountRoleRepo account_role.Repository) *Service {
+func New(accountRoleRepo account_role.Repository) *Service {
 	return &Service{
 		accountRoleRepo: accountRoleRepo,
 	}
