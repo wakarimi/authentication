@@ -71,6 +71,7 @@ func (u UseCase) SignUp(username string, password string) error {
 		return nil
 	})
 	if err != nil {
+		log.Error().Err(err).Msg("Failed to sign up")
 		return err
 	}
 

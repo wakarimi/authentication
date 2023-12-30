@@ -7,6 +7,7 @@ import (
 
 type accountRoleRepo interface {
 	Create(tx *sqlx.Tx, role account_role.AccountRole) error
+	ReadAllByAccount(tx *sqlx.Tx, accountID int) ([]account_role.AccountRole, error)
 }
 
 type Service struct {

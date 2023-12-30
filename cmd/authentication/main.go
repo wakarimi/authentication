@@ -5,8 +5,8 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"os"
+	"wakarimi-authentication/internal/app"
 	"wakarimi-authentication/internal/config"
-	"wakarimi-authentication/internal/pkg/app"
 )
 
 func main() {

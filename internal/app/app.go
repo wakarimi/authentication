@@ -43,11 +43,11 @@ func New(cfg config.Config) (*App, error) {
 	deviceRepo := device_repo.New()
 	refreshTokenRepo := refresh_token_repo.New()
 
-	accessTokenService := access_token_service.New()
+	accessTokenService := access_token_service.New(cfg.App.AccessSecretKey)
 	accountService := account_service.New(accountRepo)
 	accountRoleService := account_role_service.New(accountRoleRepo)
 	deviceService := device_service.New(deviceRepo)
-	refreshTokenService := refresh_token_service.New(refreshTokenRepo)
+	refreshTokenService := refresh_token_service.New(cfg.App.RefreshSecretKey, refreshTokenRepo)
 
 	useCase := use_case.New(transactor, accessTokenService, accountService,
 		accountRoleService, deviceService, refreshTokenService)
