@@ -1,12 +1,13 @@
 package device_service
 
-import "wakarimi-authentication/internal/model/device"
-
-type Service struct {
-	deviceRepo device.Repository
+type deviceRepo interface {
 }
 
-func New(deviceRepo device.Repository) *Service {
+type Service struct {
+	deviceRepo deviceRepo
+}
+
+func New(deviceRepo deviceRepo) *Service {
 	return &Service{
 		deviceRepo: deviceRepo,
 	}

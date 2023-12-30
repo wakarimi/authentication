@@ -1,12 +1,21 @@
 package account_service
 
-import "wakarimi-authentication/internal/model/account"
+import (
+	"github.com/jmoiron/sqlx"
+	"wakarimi-authentication/internal/model/account"
+)
 
-type Service struct {
-	accountRepo account.Repository
+type accountRepo interface {
+	CountAccounts(tx *sqlx.Tx) (int, error)
+	Create(tx *sqlx.Tx, account account.Account) (int, error)
+	IsUsernameTaken(tx *sqlx.Tx, username string) (bool, error)
 }
 
-func New(accountRepo account.Repository) *Service {
+type Service struct {
+	accountRepo accountRepo
+}
+
+func New(accountRepo accountRepo) *Service {
 	return &Service{
 		accountRepo: accountRepo,
 	}

@@ -1,12 +1,19 @@
 package account_role_service
 
-import "wakarimi-authentication/internal/model/account_role"
+import (
+	"github.com/jmoiron/sqlx"
+	"wakarimi-authentication/internal/model/account_role"
+)
 
-type Service struct {
-	accountRoleRepo account_role.Repository
+type accountRoleRepo interface {
+	Create(tx *sqlx.Tx, role account_role.AccountRole) error
 }
 
-func New(accountRoleRepo account_role.Repository) *Service {
+type Service struct {
+	accountRoleRepo accountRoleRepo
+}
+
+func New(accountRoleRepo accountRoleRepo) *Service {
 	return &Service{
 		accountRoleRepo: accountRoleRepo,
 	}
