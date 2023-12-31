@@ -37,5 +37,14 @@
   },
   "FailedToGetAccount": {
     "other": "Не удалось получить аккаунт"
+  },
+  "NotEnoughPermissions": {
+    "other": "Недостаточно прав"
+  },
+  "FailedToAssignRole": {
+    "other": "Не удалось предоставить роль"
+  },
+  "RoleConflict": {
+    "other": "Конфликт ролей"
   }
 }

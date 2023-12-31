@@ -37,5 +37,14 @@
   },
   "FailedToGetAccount": {
     "other": "Failed to get account"
+  },
+  "NotEnoughPermissions": {
+    "other": "Not enough permissions"
+  },
+  "FailedToAssignRole": {
+    "other": "Failed to assign role"
+  },
+  "RoleConflict": {
+    "other": "Role conflict"
   }
 }

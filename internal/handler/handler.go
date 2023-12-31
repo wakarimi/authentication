@@ -6,6 +6,7 @@ type useCase interface {
 	SignUp(username string, password string) error
 	SignIn(username string, password string, fingerprint string) (refreshToken string, accessToken string, err error)
 	RefreshTokens(oldRefreshToken string) (refreshToken string, accessToken string, err error)
+	AssignRole(requesterID int, accountID int, roleName string) error
 }
 
 type Handler struct {

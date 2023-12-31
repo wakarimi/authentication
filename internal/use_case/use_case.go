@@ -17,8 +17,10 @@ type accessTokenService interface {
 }
 
 type accountRoleService interface {
-	Assign(tx *sqlx.Tx, accountRole account_role.AccountRole) error
+	Assign(tx *sqlx.Tx, accountID int, accountRole account_role.RoleName) error
 	GetAllByAccount(tx *sqlx.Tx, accountID int) ([]account_role.AccountRole, error)
+	StringToRole(name string) (account_role.RoleName, error)
+	HasRole(tx *sqlx.Tx, accountID int, roleName account_role.RoleName) (bool, error)
 }
 
 type accountService interface {

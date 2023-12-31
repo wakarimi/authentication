@@ -61,22 +61,14 @@ func (u UseCase) signUp(tx *sqlx.Tx, username string, password string) error {
 		return err
 	}
 	if numberOfAccounts == 1 {
-		accountRoleToAssign := account_role.AccountRole{
-			AccountID: createdAccountID,
-			Role:      account_role.RoleAdmin,
-		}
-		err := u.accountRoleService.Assign(tx, accountRoleToAssign)
+		err := u.accountRoleService.Assign(tx, createdAccountID, account_role.RoleAdmin)
 		if err != nil {
-			log.Error().Err(err).Msg("Failed to assign admin role to first user")
+			log.Error().Err(err).Msg("Failed to assign ADMIN role to first user")
 			return err
 		}
 	}
 
-	accountRoleToAssign := account_role.AccountRole{
-		AccountID: createdAccountID,
-		Role:      account_role.RoleUser,
-	}
-	err = u.accountRoleService.Assign(tx, accountRoleToAssign)
+	err = u.accountRoleService.Assign(tx, createdAccountID, account_role.RoleUser)
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to assign USER role")
 		return err
