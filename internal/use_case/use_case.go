@@ -2,7 +2,6 @@ package use_case
 
 import (
 	"github.com/jmoiron/sqlx"
-	"wakarimi-authentication/internal/model/access_token"
 	"wakarimi-authentication/internal/model/account"
 	"wakarimi-authentication/internal/model/account_role"
 	"wakarimi-authentication/internal/model/device"
@@ -14,7 +13,7 @@ type transactor interface {
 }
 
 type accessTokenService interface {
-	Generate(payload access_token.Payload) (string, error)
+	Generate(accountID int, deviceID int, roles []account_role.AccountRole) (string, error)
 }
 
 type accountRoleService interface {
@@ -41,8 +40,11 @@ type deviceService interface {
 
 type refreshTokenService interface {
 	DeleteByDevice(tx *sqlx.Tx, deviceID int) error
-	Generate(payload refresh_token.Payload) (string, error)
-	Create(tx *sqlx.Tx, refreshToken refresh_token.RefreshToken) error
+	GenerateAndCreateInDatabase(tx *sqlx.Tx, accountID int, deviceID int) (string, error)
+	IsValid(tx *sqlx.Tx, token string) bool
+	GetByToken(tx *sqlx.Tx, token string) (refresh_token.RefreshToken, error)
+	GetPayload(token string) (refresh_token.Payload, error)
+	Delete(tx *sqlx.Tx, refreshTokenID int) error
 }
 
 type UseCase struct {

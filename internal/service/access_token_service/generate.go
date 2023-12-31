@@ -3,18 +3,25 @@ package access_token_service
 import (
 	"github.com/form3tech-oss/jwt-go"
 	"github.com/rs/zerolog/log"
+	"time"
 	"wakarimi-authentication/internal/model/access_token"
+	"wakarimi-authentication/internal/model/account_role"
 )
 
-func (s Service) Generate(payload access_token.Payload) (string, error) {
+func (s Service) Generate(accountID int, deviceID int, roles []account_role.AccountRole) (string, error) {
 	log.Debug().Msg("Generating access token")
 
+	rolesAsString := make([]string, len(roles))
+	for i, role := range roles {
+		rolesAsString[i] = string(role.Role)
+	}
+
 	claims := jwt.MapClaims{
-		"accountId": payload.AccountID,
-		"deviceId":  payload.DeviceID,
-		"roles":     payload.Roles,
-		"issuedAt":  payload.IssuedAt,
-		"expiryAt":  payload.ExpiryAt,
+		"accountId": accountID,
+		"deviceId":  deviceID,
+		"roles":     rolesAsString,
+		"issuedAt":  time.Now().Unix(),
+		"expiryAt":  time.Now().Add(access_token.Duration).Unix(),
 	}
 
 	accessTokenByte := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

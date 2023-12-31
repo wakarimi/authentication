@@ -5,6 +5,7 @@ import "github.com/nicksnyder/go-i18n/v2/i18n"
 type useCase interface {
 	SignUp(username string, password string) error
 	SignIn(username string, password string, fingerprint string) (refreshToken string, accessToken string, err error)
+	RefreshTokens(oldRefreshToken string) (refreshToken string, accessToken string, err error)
 }
 
 type Handler struct {
