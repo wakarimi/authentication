@@ -11,6 +11,8 @@ type accountRepo interface {
 	IsUsernameTaken(tx *sqlx.Tx, username string) (bool, error)
 	ReadByUsername(tx *sqlx.Tx, username string) (account.Account, error)
 	UpdateLastSignIn(tx *sqlx.Tx, accountID int) error
+	Read(tx *sqlx.Tx, accountID int) (account.Account, error)
+	UpdatePassword(tx *sqlx.Tx, accountID int, password string) error
 }
 
 type Service struct {

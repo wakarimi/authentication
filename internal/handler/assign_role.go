@@ -115,4 +115,7 @@ func (h *Handler) AssignRole(c *gin.Context) {
 			return
 		}
 	}
+
+	log.Debug().Msg("Role assigned")
+	c.Status(http.StatusNoContent)
 }

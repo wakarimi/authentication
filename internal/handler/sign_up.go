@@ -81,5 +81,5 @@ func (h *Handler) SignUp(c *gin.Context) {
 	}
 
 	log.Debug().Msg("Account created")
-	c.Status(http.StatusCreated)
+	c.Status(http.StatusNoContent)
 }

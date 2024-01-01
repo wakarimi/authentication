@@ -14,5 +14,6 @@ func (s Service) UpdateLastSignIn(tx *sqlx.Tx, accountID int) error {
 		return err
 	}
 
+	log.Debug().Int("accountId", accountID).Msg("Last sign in timestamp updated")
 	return nil
 }

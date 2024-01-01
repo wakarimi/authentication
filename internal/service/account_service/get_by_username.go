@@ -7,7 +7,7 @@ import (
 )
 
 func (s Service) GetByUsername(tx *sqlx.Tx, username string) (account.Account, error) {
-	log.Debug().Msg("Getting account by username")
+	log.Debug().Str("username", username).Msg("Getting account by username")
 
 	readAccount, err := s.accountRepo.ReadByUsername(tx, username)
 	if err != nil {
@@ -15,6 +15,6 @@ func (s Service) GetByUsername(tx *sqlx.Tx, username string) (account.Account, e
 		return account.Account{}, err
 	}
 
-	log.Debug().Int("accountId", readAccount.ID).Msg("Account got successfully")
+	log.Debug().Str("username", username).Int("accountId", readAccount.ID).Msg("Account got successfully")
 	return readAccount, nil
 }

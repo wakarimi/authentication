@@ -16,10 +16,10 @@ import (
 	"wakarimi-authentication/internal/service/device_service"
 	"wakarimi-authentication/internal/service/refresh_token_service"
 	"wakarimi-authentication/internal/storage"
-	"wakarimi-authentication/internal/storage/account_repo"
-	"wakarimi-authentication/internal/storage/account_role_repo"
-	"wakarimi-authentication/internal/storage/device_repo"
-	"wakarimi-authentication/internal/storage/refresh_token_repo"
+	"wakarimi-authentication/internal/storage/repo/account_repo"
+	"wakarimi-authentication/internal/storage/repo/account_role_repo"
+	"wakarimi-authentication/internal/storage/repo/device_repo"
+	"wakarimi-authentication/internal/storage/repo/refresh_token_repo"
 	"wakarimi-authentication/internal/use_case"
 )
 

@@ -31,6 +31,8 @@ type accountService interface {
 	GetByUsername(tx *sqlx.Tx, username string) (account.Account, error)
 	IsPasswordMatch(password string, hashedPassword string) bool
 	UpdateLastSignIn(tx *sqlx.Tx, accountID int) error
+	Get(tx *sqlx.Tx, accountID int) (account.Account, error)
+	UpdatePassword(tx *sqlx.Tx, accountID int, hashedNewPassword string) error
 }
 
 type deviceService interface {
@@ -47,6 +49,7 @@ type refreshTokenService interface {
 	GetByToken(tx *sqlx.Tx, token string) (refresh_token.RefreshToken, error)
 	GetPayload(token string) (refresh_token.Payload, error)
 	Delete(tx *sqlx.Tx, refreshTokenID int) error
+	DeleteByAccount(tx *sqlx.Tx, accountID int) error
 }
 
 type UseCase struct {

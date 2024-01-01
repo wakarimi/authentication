@@ -10,6 +10,7 @@ type refreshTokenRepo interface {
 	DeleteByDevice(tx *sqlx.Tx, deviceID int) error
 	Delete(tx *sqlx.Tx, refreshTokenID int) error
 	ReadByToken(tx *sqlx.Tx, token string) (refresh_token.RefreshToken, error)
+	DeleteByAccount(tx *sqlx.Tx, accountID int) error
 }
 
 type Service struct {

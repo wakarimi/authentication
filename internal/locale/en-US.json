@@ -46,5 +46,8 @@
   },
   "RoleConflict": {
     "other": "Role conflict"
+  },
+  "FailedToChangePassword": {
+    "other": "Failed to change password"
   }
 }

@@ -6,7 +6,7 @@ import (
 )
 
 func (r Repository) DeleteByDevice(tx *sqlx.Tx, deviceID int) (err error) {
-	log.Error().Err(err).Int("deviceId", deviceID).Msg("Deleting refresh token")
+	log.Debug().Err(err).Int("deviceId", deviceID).Msg("Deleting refresh token")
 
 	query := `
 		DELETE FROM refresh_tokens
