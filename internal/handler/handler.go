@@ -8,6 +8,8 @@ type useCase interface {
 	RefreshTokens(oldRefreshToken string) (refreshToken string, accessToken string, err error)
 	AssignRole(requesterID int, accountID int, roleName string) error
 	ChangePassword(accountID int, oldPassword string, newPassword string) error
+	SignOut(deviceID int) error
+	SignOutAll(accountID int) error
 }
 
 type Handler struct {

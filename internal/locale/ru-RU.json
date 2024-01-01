@@ -49,5 +49,8 @@
   },
   "FailedToChangePassword": {
     "other": "Не удалось сменить пароль"
+  },
+  "FailedToSignOut": {
+    "other": "Не удалось выйти из аккаунта"
   }
 }

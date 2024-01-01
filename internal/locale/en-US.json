@@ -49,5 +49,8 @@
   },
   "FailedToChangePassword": {
     "other": "Failed to change password"
+  },
+  "FailedToSignOut": {
+    "other": "Failed to sign out"
   }
 }

@@ -24,7 +24,7 @@ func (h *Handler) ChangePassword(c *gin.Context) {
 	accountIDHeader := c.GetHeader("X-Account-ID")
 	requesterAccountID, err := strconv.Atoi(accountIDHeader)
 	if err != nil {
-		log.Error().Err(err).Str("accountIDHeader", accountIDHeader).Msg("Invalid X-Account-ID format")
+		log.Error().Err(err).Str("accountIdHeader", accountIDHeader).Msg("Invalid X-Account-ID format")
 		c.JSON(http.StatusForbidden, response.Error{
 			Message: localizer.MustLocalize(&i18n.LocalizeConfig{
 				MessageID: "InvalidHeaderFormat",
