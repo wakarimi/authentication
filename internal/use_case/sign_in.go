@@ -88,11 +88,17 @@ func (u UseCase) signIn(tx *sqlx.Tx, username string, password string, fingerpri
 		return "", "", err
 	}
 
-	refreshToken, err = u.refreshTokenService.GenerateAndCreateInDatabase(tx, account.ID, createdDeviceID)
+	refreshTokenID, err := u.refreshTokenService.GenerateAndCreateInDatabase(tx, account.ID, createdDeviceID)
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to generate and save refresh token")
 		return "", "", err
 	}
+	refreshTokenStruct, err := u.refreshTokenService.Get(tx, refreshTokenID)
+	if err != nil {
+		log.Error().Msg("Failed to get refresh token")
+		return "", "", err
+	}
+	refreshToken = refreshTokenStruct.Token
 
 	roles, err := u.accountRoleService.GetAllByAccount(tx, account.ID)
 	if err != nil {
@@ -100,7 +106,7 @@ func (u UseCase) signIn(tx *sqlx.Tx, username string, password string, fingerpri
 		return "", "", err
 	}
 
-	accessToken, err = u.accessTokenService.Generate(account.ID, createdDeviceID, roles)
+	accessToken, err = u.accessTokenService.Generate(refreshTokenID, account.ID, createdDeviceID, roles)
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to generate access token")
 		return "", "", err

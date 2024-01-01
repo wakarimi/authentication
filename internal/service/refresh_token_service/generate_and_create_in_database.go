@@ -8,7 +8,7 @@ import (
 	"wakarimi-authentication/internal/model/refresh_token"
 )
 
-func (s Service) GenerateAndCreateInDatabase(tx *sqlx.Tx, accountID int, deviceID int) (string, error) {
+func (s Service) GenerateAndCreateInDatabase(tx *sqlx.Tx, accountID int, deviceID int) (int, error) {
 	log.Debug().Msg("Generating refresh token")
 
 	issuedAt := time.Now().Unix()
@@ -25,7 +25,7 @@ func (s Service) GenerateAndCreateInDatabase(tx *sqlx.Tx, accountID int, deviceI
 	refreshToken, err := refreshTokenByte.SignedString([]byte(s.secretKey))
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to create new token string")
-		return "", err
+		return 0, err
 	}
 
 	log.Debug().Msg("Creating refresh token")
@@ -36,12 +36,12 @@ func (s Service) GenerateAndCreateInDatabase(tx *sqlx.Tx, accountID int, deviceI
 		CreatedAt: time.Unix(issuedAt, 0),
 		ExpiresAt: time.Unix(expiryAt, 0),
 	}
-	err = s.refreshTokenRepo.Create(tx, refreshTokenForDatabase)
+	refreshTokenID, err := s.refreshTokenRepo.Create(tx, refreshTokenForDatabase)
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to create refresh token")
-		return "", err
+		return 0, err
 	}
 
 	log.Debug().Msg("Refresh token generated")
-	return refreshToken, nil
+	return refreshTokenID, nil
 }

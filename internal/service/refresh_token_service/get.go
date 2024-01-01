@@ -6,10 +6,10 @@ import (
 	"wakarimi-authentication/internal/model/refresh_token"
 )
 
-func (s Service) GetByToken(tx *sqlx.Tx, token string) (refresh_token.RefreshToken, error) {
+func (s Service) Get(tx *sqlx.Tx, refreshTokenID int) (refresh_token.RefreshToken, error) {
 	log.Debug().Msg("Getting refresh token")
 
-	refreshToken, err := s.refreshTokenRepo.ReadByToken(tx, token)
+	refreshToken, err := s.refreshTokenRepo.Read(tx, refreshTokenID)
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to get refresh token")
 		return refresh_token.RefreshToken{}, err

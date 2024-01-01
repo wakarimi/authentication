@@ -8,7 +8,7 @@ import (
 	"wakarimi-authentication/internal/model/account_role"
 )
 
-func (s Service) Generate(accountID int, deviceID int, roles []account_role.AccountRole) (string, error) {
+func (s Service) Generate(refreshTokenID int, accountID int, deviceID int, roles []account_role.AccountRole) (string, error) {
 	log.Debug().Msg("Generating access token")
 
 	rolesAsString := make([]string, len(roles))
@@ -17,11 +17,12 @@ func (s Service) Generate(accountID int, deviceID int, roles []account_role.Acco
 	}
 
 	claims := jwt.MapClaims{
-		"accountId": accountID,
-		"deviceId":  deviceID,
-		"roles":     rolesAsString,
-		"issuedAt":  time.Now().Unix(),
-		"expiryAt":  time.Now().Add(access_token.Duration).Unix(),
+		"accountId":      accountID,
+		"deviceId":       deviceID,
+		"roles":          rolesAsString,
+		"refreshTokenId": refreshTokenID,
+		"issuedAt":       time.Now().Unix(),
+		"expiryAt":       time.Now().Add(access_token.Duration).Unix(),
 	}
 
 	accessTokenByte := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

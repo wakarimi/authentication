@@ -6,11 +6,12 @@ import (
 )
 
 type refreshTokenRepo interface {
-	Create(tx *sqlx.Tx, token refresh_token.RefreshToken) error
+	Create(tx *sqlx.Tx, token refresh_token.RefreshToken) (int, error)
 	DeleteByDevice(tx *sqlx.Tx, deviceID int) error
 	Delete(tx *sqlx.Tx, refreshTokenID int) error
 	ReadByToken(tx *sqlx.Tx, token string) (refresh_token.RefreshToken, error)
 	DeleteByAccount(tx *sqlx.Tx, accountID int) error
+	Read(tx *sqlx.Tx, refreshTokenID int) (refresh_token.RefreshToken, error)
 }
 
 type Service struct {

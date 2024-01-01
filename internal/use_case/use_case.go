@@ -13,7 +13,7 @@ type transactor interface {
 }
 
 type accessTokenService interface {
-	Generate(accountID int, deviceID int, roles []account_role.AccountRole) (string, error)
+	Generate(refreshTokenID int, accountID int, deviceID int, roles []account_role.AccountRole) (string, error)
 }
 
 type accountRoleService interface {
@@ -44,12 +44,13 @@ type deviceService interface {
 
 type refreshTokenService interface {
 	DeleteByDevice(tx *sqlx.Tx, deviceID int) error
-	GenerateAndCreateInDatabase(tx *sqlx.Tx, accountID int, deviceID int) (string, error)
+	GenerateAndCreateInDatabase(tx *sqlx.Tx, accountID int, deviceID int) (int, error)
 	IsValid(tx *sqlx.Tx, token string) bool
 	GetByToken(tx *sqlx.Tx, token string) (refresh_token.RefreshToken, error)
 	GetPayload(token string) (refresh_token.Payload, error)
 	Delete(tx *sqlx.Tx, refreshTokenID int) error
 	DeleteByAccount(tx *sqlx.Tx, accountID int) error
+	Get(tx *sqlx.Tx, refreshTokenID int) (refresh_token.RefreshToken, error)
 }
 
 type UseCase struct {

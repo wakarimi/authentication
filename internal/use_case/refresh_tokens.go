@@ -49,11 +49,17 @@ func (u UseCase) refreshTokens(tx *sqlx.Tx, oldRefreshToken string) (refreshToke
 		log.Error().Err(err).Msg("Failed to delete old refresh token from database")
 		return "", "", err
 	}
-	refreshToken, err = u.refreshTokenService.GenerateAndCreateInDatabase(tx, oldRefreshTokenPayload.AccountID, oldRefreshTokenPayload.DeviceID)
+	refreshTokenID, err := u.refreshTokenService.GenerateAndCreateInDatabase(tx, oldRefreshTokenPayload.AccountID, oldRefreshTokenPayload.DeviceID)
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to generate and save refresh token")
 		return "", "", err
 	}
+	refreshTokenStruct, err := u.refreshTokenService.Get(tx, refreshTokenID)
+	if err != nil {
+		log.Error().Msg("Failed to get refresh token")
+		return "", "", err
+	}
+	refreshToken = refreshTokenStruct.Token
 
 	roles, err := u.accountRoleService.GetAllByAccount(tx, oldRefreshTokenPayload.AccountID)
 	if err != nil {
@@ -61,7 +67,7 @@ func (u UseCase) refreshTokens(tx *sqlx.Tx, oldRefreshToken string) (refreshToke
 		return "", "", err
 	}
 
-	accessToken, err = u.accessTokenService.Generate(oldRefreshTokenPayload.AccountID, oldRefreshTokenPayload.DeviceID, roles)
+	accessToken, err = u.accessTokenService.Generate(refreshTokenID, oldRefreshTokenPayload.AccountID, oldRefreshTokenPayload.DeviceID, roles)
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to generate access token")
 		return "", "", err
