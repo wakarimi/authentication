@@ -16,6 +16,7 @@ type useCase interface {
 	SignOutAll(accountID int) error
 	RevokeRole(requesterID int, accountID int, roleName string) error
 	GetAccountDetails(requesterID int, accountID int) (acc account.Account, roles []account_role.AccountRole, err error)
+	GetAccounts(ids []int) ([]account.Account, error)
 }
 
 type Handler struct {

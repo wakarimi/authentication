@@ -35,6 +35,7 @@ type accountService interface {
 	Get(tx *sqlx.Tx, accountID int) (account.Account, error)
 	UpdatePassword(tx *sqlx.Tx, accountID int, hashedNewPassword string) error
 	IsExists(tx *sqlx.Tx, accountID int) (bool, error)
+	GetByIds(tx *sqlx.Tx, ids []int) ([]account.Account, error)
 }
 
 type deviceService interface {

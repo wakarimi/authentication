@@ -58,5 +58,8 @@
   },
   "FailedToRevokeRole": {
     "other": "Не удалось снять роль"
+  },
+  "InvalidIdFormat": {
+    "other": "Неверный формат индексов"
   }
 }

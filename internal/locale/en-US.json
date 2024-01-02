@@ -58,5 +58,8 @@
   },
   "FailedToRevokeRole": {
     "other": "Failed to revoke role"
+  },
+  "InvalidIdFormat": {
+    "other": "Invalid id format"
   }
 }
