@@ -1,7 +1,9 @@
 package use_case
 
 import (
+	"github.com/form3tech-oss/jwt-go"
 	"github.com/jmoiron/sqlx"
+	"wakarimi-authentication/internal/model/access_token"
 	"wakarimi-authentication/internal/model/account"
 	"wakarimi-authentication/internal/model/account_role"
 	"wakarimi-authentication/internal/model/device"
@@ -14,6 +16,8 @@ type transactor interface {
 
 type accessTokenService interface {
 	Generate(refreshTokenID int, accountID int, deviceID int, roles []account_role.AccountRole) (string, error)
+	Parse(token string) (*jwt.Token, error)
+	GetPayload(token string) (access_token.Payload, error)
 }
 
 type accountRoleService interface {
