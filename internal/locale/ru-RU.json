@@ -52,5 +52,11 @@
   },
   "FailedToSignOut": {
     "other": "Не удалось выйти из аккаунта"
+  },
+  "AccountOrRoleNotFound": {
+    "other": "Аккаунт или роль не найдены"
+  },
+  "FailedToRevokeRole": {
+    "other": "Не удалось снять роль"
   }
 }

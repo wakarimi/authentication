@@ -52,5 +52,11 @@
   },
   "FailedToSignOut": {
     "other": "Failed to sign out"
+  },
+  "AccountOrRoleNotFound": {
+    "other": "Account or role not found"
+  },
+  "FailedToRevokeRole": {
+    "other": "Failed to revoke role"
   }
 }

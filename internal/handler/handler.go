@@ -10,6 +10,7 @@ type useCase interface {
 	ChangePassword(accountID int, oldPassword string, newPassword string) error
 	SignOut(deviceID int) error
 	SignOutAll(accountID int) error
+	RevokeRole(requesterID int, accountID int, roleName string) error
 }
 
 type Handler struct {

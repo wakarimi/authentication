@@ -13,6 +13,7 @@ type accountRepo interface {
 	UpdateLastSignIn(tx *sqlx.Tx, accountID int) error
 	Read(tx *sqlx.Tx, accountID int) (account.Account, error)
 	UpdatePassword(tx *sqlx.Tx, accountID int, password string) error
+	IsExists(tx *sqlx.Tx, accountID int) (bool, error)
 }
 
 type Service struct {

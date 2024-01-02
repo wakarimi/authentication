@@ -21,6 +21,7 @@ type accountRoleService interface {
 	GetAllByAccount(tx *sqlx.Tx, accountID int) ([]account_role.AccountRole, error)
 	StringToRole(name string) (account_role.RoleName, error)
 	HasRole(tx *sqlx.Tx, accountID int, roleName account_role.RoleName) (bool, error)
+	Revoke(tx *sqlx.Tx, accountID int, accountRole account_role.RoleName) error
 }
 
 type accountService interface {
@@ -33,6 +34,7 @@ type accountService interface {
 	UpdateLastSignIn(tx *sqlx.Tx, accountID int) error
 	Get(tx *sqlx.Tx, accountID int) (account.Account, error)
 	UpdatePassword(tx *sqlx.Tx, accountID int, hashedNewPassword string) error
+	IsExists(tx *sqlx.Tx, accountID int) (bool, error)
 }
 
 type deviceService interface {
