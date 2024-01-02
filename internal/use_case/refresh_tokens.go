@@ -21,7 +21,7 @@ func (u UseCase) RefreshTokens(oldRefreshToken string) (refreshToken string, acc
 		return "", "", err
 	}
 
-	return refreshToken, accessToken, err
+	return refreshToken, accessToken, nil
 }
 
 func (u UseCase) refreshTokens(tx *sqlx.Tx, oldRefreshToken string) (refreshToken string, accessToken string, err error) {

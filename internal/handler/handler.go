@@ -1,6 +1,10 @@
 package handler
 
-import "github.com/nicksnyder/go-i18n/v2/i18n"
+import (
+	"github.com/nicksnyder/go-i18n/v2/i18n"
+	"wakarimi-authentication/internal/model/account"
+	"wakarimi-authentication/internal/model/account_role"
+)
 
 type useCase interface {
 	SignUp(username string, password string) error
@@ -11,6 +15,7 @@ type useCase interface {
 	SignOut(deviceID int) error
 	SignOutAll(accountID int) error
 	RevokeRole(requesterID int, accountID int, roleName string) error
+	GetAccountDetails(requesterID int, accountID int) (acc account.Account, roles []account_role.AccountRole, err error)
 }
 
 type Handler struct {
