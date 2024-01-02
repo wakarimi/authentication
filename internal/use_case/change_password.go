@@ -1,6 +1,7 @@
 package use_case
 
 import (
+	"fmt"
 	"github.com/jmoiron/sqlx"
 	"github.com/rs/zerolog/log"
 	"wakarimi-authentication/internal/errors"
@@ -25,6 +26,16 @@ func (u UseCase) ChangePassword(accountID int, oldPassword string, newPassword s
 }
 
 func (u UseCase) changePassword(tx *sqlx.Tx, accountID int, oldPassword string, newPassword string) (err error) {
+	isAccountExists, err := u.accountService.IsExists(tx, accountID)
+	if err != nil {
+		log.Error().Err(err).Int("accountId", accountID).Msg("Failed to check account existence")
+		return err
+	}
+	if !isAccountExists {
+		err = errors.NotFound{EntityName: fmt.Sprintf("account with id=%d", accountID)}
+		log.Error().Err(err).Int("accountId", accountID).Msg("Account not found")
+		return err
+	}
 	account, err := u.accountService.Get(tx, accountID)
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to read account by username")

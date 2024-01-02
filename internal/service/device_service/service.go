@@ -10,6 +10,7 @@ type deviceRepo interface {
 	Delete(tx *sqlx.Tx, deviceID int) error
 	ReadByAccountAndFingerprint(tx *sqlx.Tx, accountID int, fingerprint string) (device.Device, error)
 	IsExistsByAccountAndFingerprint(tx *sqlx.Tx, accountID int, fingerprint string) (bool, error)
+	IsExists(tx *sqlx.Tx, deviceID int) (bool, error)
 }
 
 type Service struct {

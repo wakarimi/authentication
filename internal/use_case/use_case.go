@@ -42,6 +42,7 @@ type deviceService interface {
 	GetByAccountAndFingerprint(tx *sqlx.Tx, accountID int, fingerprint string) (device.Device, error)
 	Delete(tx *sqlx.Tx, deviceID int) error
 	Create(tx *sqlx.Tx, create device.Device) (int, error)
+	IsExists(tx *sqlx.Tx, deviceID int) (bool, error)
 }
 
 type refreshTokenService interface {

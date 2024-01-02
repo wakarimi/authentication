@@ -40,7 +40,7 @@ func (u UseCase) revokeRole(tx *sqlx.Tx, requesterID int, accountID int, roleNam
 
 	isAccountExists, err := u.accountService.IsExists(tx, accountID)
 	if err != nil {
-		log.Error().Err(err).Int("accountId", requesterID).Msg("Failed to check account existence")
+		log.Error().Err(err).Int("accountId", accountID).Msg("Failed to check account existence")
 		return err
 	}
 	if !isAccountExists {

@@ -26,6 +26,11 @@ func (u UseCase) SignIn(username string, password string, fingerprint string) (r
 }
 
 func (u UseCase) signIn(tx *sqlx.Tx, username string, password string, fingerprint string) (refreshToken string, accessToken string, err error) {
+	if len(username) == 0 || len(password) == 0 {
+		err = errors.Conflict{"username or password not specified"}
+		log.Error().Err(err).Str("username", username).Msg("username or password not specified")
+		return "", "", err
+	}
 	isUsernameTaken, err := u.accountService.IsUsernameTaken(tx, username)
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to check account by username existence")

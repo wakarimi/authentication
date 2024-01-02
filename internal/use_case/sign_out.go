@@ -1,8 +1,10 @@
 package use_case
 
 import (
+	"fmt"
 	"github.com/jmoiron/sqlx"
 	"github.com/rs/zerolog/log"
+	"wakarimi-authentication/internal/errors"
 )
 
 func (u UseCase) SignOut(deviceID int) (err error) {
@@ -24,6 +26,16 @@ func (u UseCase) SignOut(deviceID int) (err error) {
 }
 
 func (u UseCase) signOut(tx *sqlx.Tx, deviceID int) (err error) {
+	isDeviceExists, err := u.deviceService.IsExists(tx, deviceID)
+	if err != nil {
+		log.Error().Err(err).Int("deviceId", deviceID).Msg("Failed to check device existence")
+		return err
+	}
+	if !isDeviceExists {
+		err = errors.NotFound{EntityName: fmt.Sprintf("device with id=%d", deviceID)}
+		log.Error().Err(err).Int("deviceId", deviceID).Msg("Device not found")
+		return err
+	}
 	err = u.refreshTokenService.DeleteByDevice(tx, deviceID)
 	if err != nil {
 		log.Error().Err(err).Int("deviceId", deviceID).Msg("Failed to delete device's refresh tokens")

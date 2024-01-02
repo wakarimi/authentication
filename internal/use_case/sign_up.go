@@ -28,6 +28,11 @@ func (u UseCase) SignUp(username string, password string) error {
 }
 
 func (u UseCase) signUp(tx *sqlx.Tx, username string, password string) error {
+	if len(username) == 0 || len(password) == 0 {
+		err := errors.Conflict{"username or password not specified"}
+		log.Error().Err(err).Str("username", username).Msg("username or password not specified")
+		return err
+	}
 	isUsernameAlreadyTaken, err := u.accountService.IsUsernameTaken(tx, username)
 	if err != nil {
 		log.Error().Err(err).Str("username", username).Msg("Failed to check if the username is taken")
