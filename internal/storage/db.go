@@ -36,7 +36,6 @@ func connectDB(cfg config.DBConfig) (db *sqlx.DB, err error) {
 	connectionStringBuilder.WriteString(fmt.Sprintf("/%s", cfg.DBName))
 	connectionStringBuilder.WriteString("?sslmode=disable")
 	connectionString := connectionStringBuilder.String()
-	log.Info().Str("conStr", connectionString).Msg("Строка подключения")
 
 	db, err = sqlx.Connect("postgres", connectionString)
 	if err != nil {

@@ -13,7 +13,6 @@ func main() {
 	if err != nil {
 		log.Fatal().Err(err).Msg("Failed to read config")
 	}
-	log.Info().Interface("cfg", cfg).Msg("На конфиг")
 
 	initializeLogger(cfg.App.LoggingLevel)
 
