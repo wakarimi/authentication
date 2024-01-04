@@ -43,11 +43,7 @@ func (h *Handler) SignUp(c *gin.Context) {
 		messageID := "ValidationFailedForRequest"
 		message, errLoc := localizer.Localize(&i18n.LocalizeConfig{MessageID: messageID})
 		if errLoc != nil {
-<<<<<<< HEAD:internal/handler/account_handler/create.go
-			message = h.EngLocalizer.MustLocalize(&i18n.LocalizeConfig{MessageID: messageID})
-=======
 			message = h.engLocalizer.MustLocalize(&i18n.LocalizeConfig{MessageID: messageID})
->>>>>>> develop:internal/handler/sign_up.go
 		}
 		c.JSON(http.StatusBadRequest, response.Error{
 			Message: message,
