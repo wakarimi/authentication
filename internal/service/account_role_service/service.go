@@ -1,18 +1,22 @@
 package account_role_service
 
 import (
-	"authentication/internal/database/repository/account_role_repo"
+	"github.com/jmoiron/sqlx"
+	"wakarimi-authentication/internal/model/account_role"
 )
 
-type Service struct {
-	AccountRoleRepo account_role_repo.Repo
+type accountRoleRepo interface {
+	Create(tx *sqlx.Tx, role account_role.AccountRole) error
+	ReadAllByAccount(tx *sqlx.Tx, accountID int) ([]account_role.AccountRole, error)
+	Delete(tx *sqlx.Tx, role account_role.AccountRole) error
 }
 
-func NewService(accountRoleRepo account_role_repo.Repo) (s *Service) {
+type Service struct {
+	accountRoleRepo accountRoleRepo
+}
 
-	s = &Service{
-		AccountRoleRepo: accountRoleRepo,
+func New(accountRoleRepo accountRoleRepo) *Service {
+	return &Service{
+		accountRoleRepo: accountRoleRepo,
 	}
-
-	return s
 }

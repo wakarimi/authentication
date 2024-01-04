@@ -1,22 +1,28 @@
 package account_service
 
 import (
-	"authentication/internal/database/repository/account_repo"
-	"authentication/internal/service/account_role_service"
+	"github.com/jmoiron/sqlx"
+	"wakarimi-authentication/internal/model/account"
 )
 
-type Service struct {
-	AccountRepo        account_repo.Repo
-	AccountRoleService account_role_service.Service
+type accountRepo interface {
+	CountAccounts(tx *sqlx.Tx) (int, error)
+	Create(tx *sqlx.Tx, accountToCreate account.Account) (int, error)
+	IsUsernameTaken(tx *sqlx.Tx, username string) (bool, error)
+	ReadByUsername(tx *sqlx.Tx, username string) (account.Account, error)
+	UpdateLastSignIn(tx *sqlx.Tx, accountID int) error
+	Read(tx *sqlx.Tx, accountID int) (account.Account, error)
+	UpdatePassword(tx *sqlx.Tx, accountID int, password string) error
+	IsExists(tx *sqlx.Tx, accountID int) (bool, error)
+	ReadAllByIds(tx *sqlx.Tx, ids []int) ([]account.Account, error)
 }
 
-func NewService(accountRepo account_repo.Repo,
-	accountRoleService account_role_service.Service) (s *Service) {
+type Service struct {
+	accountRepo accountRepo
+}
 
-	s = &Service{
-		AccountRepo:        accountRepo,
-		AccountRoleService: accountRoleService,
+func New(accountRepo accountRepo) *Service {
+	return &Service{
+		accountRepo: accountRepo,
 	}
-
-	return s
 }

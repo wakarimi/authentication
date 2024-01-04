@@ -5,7 +5,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func (s Service) HashPassword(password string) (hashedPassword string, err error) {
+func (s Service) HashPassword(password string) (string, error) {
 	log.Debug().Msg("Password hashing")
 
 	hashedBytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
@@ -13,7 +13,7 @@ func (s Service) HashPassword(password string) (hashedPassword string, err error
 		log.Error().Err(err).Msg("Failed to hash password")
 		return "", err
 	}
-	hashedPassword = string(hashedBytes)
+	hashedPassword := string(hashedBytes)
 
 	log.Debug().Msg("Password hashed")
 	return hashedPassword, nil

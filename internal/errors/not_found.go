@@ -3,9 +3,9 @@ package errors
 import "fmt"
 
 type NotFound struct {
-	Resource string
+	EntityName string
 }
 
 func (e NotFound) Error() string {
-	return fmt.Sprintf("%s not found", e.Resource)
+	return fmt.Sprintf("%s not found", e.EntityName)
 }

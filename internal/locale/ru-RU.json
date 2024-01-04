@@ -37,5 +37,29 @@
   },
   "FailedToGetAccount": {
     "other": "Не удалось получить аккаунт"
+  },
+  "NotEnoughPermissions": {
+    "other": "Недостаточно прав"
+  },
+  "FailedToAssignRole": {
+    "other": "Не удалось предоставить роль"
+  },
+  "RoleConflict": {
+    "other": "Конфликт ролей"
+  },
+  "FailedToChangePassword": {
+    "other": "Не удалось сменить пароль"
+  },
+  "FailedToSignOut": {
+    "other": "Не удалось выйти из аккаунта"
+  },
+  "AccountOrRoleNotFound": {
+    "other": "Аккаунт или роль не найдены"
+  },
+  "FailedToRevokeRole": {
+    "other": "Не удалось снять роль"
+  },
+  "InvalidIdFormat": {
+    "other": "Неверный формат индексов"
   }
 }

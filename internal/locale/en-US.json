@@ -37,5 +37,29 @@
   },
   "FailedToGetAccount": {
     "other": "Failed to get account"
+  },
+  "NotEnoughPermissions": {
+    "other": "Not enough permissions"
+  },
+  "FailedToAssignRole": {
+    "other": "Failed to assign role"
+  },
+  "RoleConflict": {
+    "other": "Role conflict"
+  },
+  "FailedToChangePassword": {
+    "other": "Failed to change password"
+  },
+  "FailedToSignOut": {
+    "other": "Failed to sign out"
+  },
+  "AccountOrRoleNotFound": {
+    "other": "Account or role not found"
+  },
+  "FailedToRevokeRole": {
+    "other": "Failed to revoke role"
+  },
+  "InvalidIdFormat": {
+    "other": "Invalid id format"
   }
 }

@@ -1,10 +1,9 @@
-FROM golang:1.21 as builder
-WORKDIR /go/src/app
+FROM golang:latest
+
+WORKDIR /app
+
 COPY . .
-RUN go mod download
-WORKDIR /go/src/app/cmd/authentication
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
-FROM alpine:latest
-WORKDIR /root/
-COPY --from=builder /go/src/app/cmd/authentication/main .
+
+RUN go build -o main ./cmd/authentication/main.go
+
 CMD ["./main"]

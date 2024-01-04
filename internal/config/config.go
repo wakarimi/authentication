@@ -3,60 +3,83 @@ package config
 import (
 	"github.com/rs/zerolog"
 	"github.com/spf13/viper"
-	"strings"
+	"time"
 )
 
-type Configuration struct {
-	Database
-	HttpServer
-	JwtConfiguration
-	Logger
-}
-
-type Database struct {
-	ConnectionString string
-}
-
-type HttpServer struct {
-	Port string
-}
-
-type JwtConfiguration struct {
+type AppConfig struct {
+	Name             string
+	Env              string
+	LoggingLevel     zerolog.Level
+	Version          string
 	RefreshSecretKey string
 	AccessSecretKey  string
 }
 
-type Logger struct {
-	Level zerolog.Level
+type HTTPConfig struct {
+	Port int
 }
 
-func LoadConfiguration() (config *Configuration, err error) {
-	viper.AutomaticEnv()
-	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+type DBConfig struct {
+	Host          string
+	Port          int
+	DBName        string
+	User          string
+	Password      string
+	Timeout       time.Duration
+	ReadTimeout   time.Duration
+	WriteTimeout  time.Duration
+	Charset       string
+	MigrationPath string
+}
 
-	config = &Configuration{
-		Database{
-			ConnectionString:
-			viper.GetString("WAKARIMI_AUTHENTICATION_DB_STRING"),
+type Config struct {
+	App  AppConfig
+	HTTP HTTPConfig
+	DB   DBConfig
+}
+
+func New() (config Config, err error) {
+	viper.SetDefault("APP_NAME", "wakarimi-authentication")
+	viper.SetDefault("APP_LOGGING_LEVEL", "INFO")
+	viper.SetDefault("APP_VERSION", "v1")
+	viper.SetDefault("HTTP_PORT", 8020)
+	viper.SetDefault("DB_READ_TIMEOUT", "1s")
+	viper.SetDefault("DB_WRITE_TIMEOUT", "1s")
+	viper.SetDefault("DB_CHARSET", "UTF-8")
+
+	viper.AutomaticEnv()
+
+	config = Config{
+		App: AppConfig{
+			Name:             viper.GetString("APP_NAME"),
+			Version:          viper.GetString("APP_VERSION"),
+			LoggingLevel:     parseLoggingLevel(viper.GetString("APP_LOGGING_LEVEL")),
+			RefreshSecretKey: viper.GetString("APP_REFRESH_KEY"),
+			AccessSecretKey:  viper.GetString("APP_ACCESS_KEY"),
 		},
-		HttpServer{
-			Port: viper.GetString("HTTP_SERVER_PORT"),
+
+		HTTP: HTTPConfig{
+			Port: viper.GetInt("HTTP_PORT"),
 		},
-		JwtConfiguration{
-			RefreshSecretKey: viper.GetString("REFRESH_SECRET_KEY"),
-			AccessSecretKey:  viper.GetString("ACCESS_SECRET_KEY"),
-		},
-		Logger{
-			Level: loadLoggingLevel(),
+
+		DB: DBConfig{
+			Host:          viper.GetString("DB_HOST"),
+			Port:          viper.GetInt("DB_PORT"),
+			DBName:        viper.GetString("DB_NAME"),
+			User:          viper.GetString("DB_USER"),
+			Password:      viper.GetString("DB_PASSWORD"),
+			ReadTimeout:   viper.GetDuration("DB_READ_TIMEOUT"),
+			WriteTimeout:  viper.GetDuration("DB_WRITE_TIMEOUT"),
+			Charset:       viper.GetString("DB_CHARSET"),
+			MigrationPath: "internal/storage/migration",
 		},
 	}
 
 	return config, nil
 }
 
-func loadLoggingLevel() zerolog.Level {
-	levelStr := viper.GetString("LOGGING_LEVEL")
-	switch levelStr {
+func parseLoggingLevel(loggingLevel string) zerolog.Level {
+	switch loggingLevel {
 	case "TRACE":
 		return zerolog.TraceLevel
 	case "DEBUG":

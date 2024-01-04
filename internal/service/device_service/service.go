@@ -1,22 +1,24 @@
 package device_service
 
 import (
-	"authentication/internal/database/repository/device_repo"
-	"authentication/internal/service/account_service"
+	"github.com/jmoiron/sqlx"
+	"wakarimi-authentication/internal/model/device"
 )
 
-type Service struct {
-	DeviceRepo     device_repo.Repo
-	AccountService account_service.Service
+type deviceRepo interface {
+	Create(tx *sqlx.Tx, deviceToCreate device.Device) (int, error)
+	Delete(tx *sqlx.Tx, deviceID int) error
+	ReadByAccountAndFingerprint(tx *sqlx.Tx, accountID int, fingerprint string) (device.Device, error)
+	IsExistsByAccountAndFingerprint(tx *sqlx.Tx, accountID int, fingerprint string) (bool, error)
+	IsExists(tx *sqlx.Tx, deviceID int) (bool, error)
 }
 
-func NewService(deviceRepo device_repo.Repo,
-	accountService account_service.Service) (s *Service) {
+type Service struct {
+	deviceRepo deviceRepo
+}
 
-	s = &Service{
-		AccountService: accountService,
-		DeviceRepo:     deviceRepo,
+func New(deviceRepo deviceRepo) *Service {
+	return &Service{
+		deviceRepo: deviceRepo,
 	}
-
-	return s
 }

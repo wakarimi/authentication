@@ -1,8 +1,10 @@
-version: "3"
+version: '3'
 
 services:
-  wakarimi-authentication:
-    container_name: wakarimi-authentication
+  myapp:
     build:
       context: .
-    image: wakarimi-authentication
+      dockerfile: Dockerfile
+    image: zalimannard/wakarimi-authentication:latest
+    ports:
+      - "8020:8020"

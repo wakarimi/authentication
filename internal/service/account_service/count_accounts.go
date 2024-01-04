@@ -5,10 +5,10 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func (s Service) CountAccounts(tx *sqlx.Tx) (count int, err error) {
+func (s Service) CountAccounts(tx *sqlx.Tx) (int, error) {
 	log.Debug().Msg("Counting total number of accounts")
 
-	count, err = s.AccountRepo.CountAccounts(tx)
+	count, err := s.accountRepo.CountAccounts(tx)
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to count accounts")
 		return 0, err

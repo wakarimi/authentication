@@ -1,26 +1,20 @@
 package account_service
 
 import (
-	"authentication/internal/errors"
-	"authentication/internal/model"
-	"fmt"
 	"github.com/jmoiron/sqlx"
+	"github.com/rs/zerolog/log"
+	"wakarimi-authentication/internal/model/account"
 )
 
-func (s Service) Get(tx *sqlx.Tx, accountID int) (account model.Account, err error) {
-	isExists, err := s.IsExists(tx, accountID)
+func (s Service) Get(tx *sqlx.Tx, accountID int) (account.Account, error) {
+	log.Debug().Msg("Getting account by username")
+
+	readAccount, err := s.accountRepo.Read(tx, accountID)
 	if err != nil {
-		return model.Account{}, err
-	}
-	if !isExists {
-		err = errors.NotFound{Resource: fmt.Sprintf("account with id=%d", accountID)}
-		return model.Account{}, err
+		log.Error().Err(err).Msg("Failed to read account by username")
+		return account.Account{}, err
 	}
 
-	account, err = s.AccountRepo.Read(tx, accountID)
-	if err != nil {
-		return model.Account{}, err
-	}
-
-	return account, nil
+	log.Debug().Int("accountId", readAccount.ID).Msg("Account got successfully")
+	return readAccount, nil
 }

@@ -1,25 +1,19 @@
 package device_service
 
 import (
-	"authentication/internal/errors"
-	"fmt"
 	"github.com/jmoiron/sqlx"
+	"github.com/rs/zerolog/log"
 )
 
-func (s Service) Delete(tx *sqlx.Tx, deviceID int) (err error) {
-	isExists, err := s.IsExists(tx, deviceID)
+func (s Service) Delete(tx *sqlx.Tx, deviceID int) error {
+	log.Debug().Msg("Deleting a device")
+
+	err := s.deviceRepo.Delete(tx, deviceID)
 	if err != nil {
-		return err
-	}
-	if !isExists {
-		err = errors.NotFound{Resource: fmt.Sprintf("device with id=%d", deviceID)}
+		log.Error().Err(err).Msg("Failed to delete device")
 		return err
 	}
 
-	err = s.DeviceRepo.Delete(tx, deviceID)
-	if err != nil {
-		return err
-	}
-
+	log.Debug().Msg("Device deleted")
 	return nil
 }
