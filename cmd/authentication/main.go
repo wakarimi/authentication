@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"os"
@@ -10,13 +9,11 @@ import (
 )
 
 func main() {
-	configFilePath := flag.String("config", "config/config.yml", "Path to the config file")
-	flag.Parse()
-
-	cfg, err := config.New(*configFilePath)
+	cfg, err := config.New()
 	if err != nil {
 		log.Fatal().Err(err).Msg("Failed to read config")
 	}
+	log.Info().Interface("cfg", cfg).Msg("На конфиг")
 
 	initializeLogger(cfg.App.LoggingLevel)
 

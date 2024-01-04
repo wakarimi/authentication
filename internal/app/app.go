@@ -33,7 +33,7 @@ func New(cfg config.Config) (*App, error) {
 
 	db, err := storage.New(cfg.DB)
 	if err != nil {
-		return nil, err
+		log.Fatal().Err(err).Msg("Failed to create storage")
 	}
 
 	transactor := service.NewTransactor(*db)

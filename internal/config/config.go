@@ -19,10 +19,6 @@ type HTTPConfig struct {
 	Port int
 }
 
-type ThirdPartyService struct {
-	Url string
-}
-
 type DBConfig struct {
 	Host          string
 	Port          int
@@ -37,59 +33,52 @@ type DBConfig struct {
 }
 
 type Config struct {
-	App        AppConfig
-	HTTP       HTTPConfig
-	DB         DBConfig
-	ApiGateway ThirdPartyService
+	App  AppConfig
+	HTTP HTTPConfig
+	DB   DBConfig
 }
 
-func New(filePath string) (config Config, err error) {
-	viper.SetConfigFile(filePath)
+func New() (config Config, err error) {
+	viper.SetDefault("APP_NAME", "wakarimi-authentication")
+	viper.SetDefault("APP_ENV", "dev")
+	viper.SetDefault("APP_LOGGING_LEVEL", "INFO")
+	viper.SetDefault("APP_VERSION", "v1")
+	viper.SetDefault("HTTP_PORT", 8020)
+	viper.SetDefault("DB_READ_TIMEOUT", "1s")
+	viper.SetDefault("DB_WRITE_TIMEOUT", "1s")
+	viper.SetDefault("DB_CHARSET", "UTF-8")
+	viper.SetDefault("DB_MIGRATION_PATH", "internal/storage/migration")
 
-	err = viper.ReadInConfig()
-	if err != nil {
-		return Config{}, err
-	}
-
-	viper.SetDefault("app.name", "wakarimi-authentication")
-	viper.SetDefault("app.env", "dev")
-	viper.SetDefault("app.logging_level", "INFO")
-	viper.SetDefault("app.version", "v1")
-	viper.SetDefault("http.read_timeout", "1s")
-	viper.SetDefault("http.write_timeout", "1s")
-	viper.SetDefault("db.read_timeout", "1s")
-	viper.SetDefault("db.write_timeout", "1s")
-	viper.SetDefault("db.charset", "UTF-8")
-	viper.SetDefault("db.migration_path", "internal/storage/migration")
+	viper.AutomaticEnv()
 
 	config = Config{
 		App: AppConfig{
-			Name:             viper.GetString("app.name"),
-			Env:              viper.GetString("app.env"),
-			Version:          viper.GetString("app.version"),
-			LoggingLevel:     parseLoggingLevel(viper.GetString("app.logging_level")),
-			RefreshSecretKey: viper.GetString("app.refresh_key"),
-			AccessSecretKey:  viper.GetString("app.access_key"),
+			Name:             viper.GetString("APP_NAME"),
+			Env:              viper.GetString("APP_ENV"),
+			Version:          viper.GetString("APP_VERSION"),
+			LoggingLevel:     parseLoggingLevel(viper.GetString("APP_LOGGING_LEVEL")),
+			RefreshSecretKey: viper.GetString("APP_REFRESH_KEY"),
+			AccessSecretKey:  viper.GetString("APP_ACCESS_KEY"),
 		},
 
 		HTTP: HTTPConfig{
-			Port: viper.GetInt("http.port"),
+			Port: viper.GetInt("HTTP_PORT"),
 		},
 
 		DB: DBConfig{
-			Host:          viper.GetString("db.host"),
-			Port:          viper.GetInt("db.port"),
-			DBName:        viper.GetString("db.name"),
-			User:          viper.GetString("db.user"),
-			Password:      viper.GetString("db.password"),
-			ReadTimeout:   viper.GetDuration("db.read_timeout"),
-			WriteTimeout:  viper.GetDuration("db.write_timeout"),
-			Charset:       viper.GetString("db.charset"),
-			MigrationPath: viper.GetString("db.migration_path"),
+			Host:          viper.GetString("DB_HOST"),
+			Port:          viper.GetInt("DB_PORT"),
+			DBName:        viper.GetString("DB_NAME"),
+			User:          viper.GetString("DB_USER"),
+			Password:      viper.GetString("DB_PASSWORD"),
+			ReadTimeout:   viper.GetDuration("DB_READ_TIMEOUT"),
+			WriteTimeout:  viper.GetDuration("DB_WRITE_TIMEOUT"),
+			Charset:       viper.GetString("DB_CHARSET"),
+			MigrationPath: viper.GetString("DB_MIGRATION_PATH"),
 		},
 	}
 
-	return config, err
+	return config, nil
 }
 
 func parseLoggingLevel(loggingLevel string) zerolog.Level {
