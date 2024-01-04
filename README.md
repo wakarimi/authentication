@@ -11,7 +11,8 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - /var/lib/postgresql/data/
+      - /data/postgresql:/var/lib/postgresql
+      - /data/postgresql/data:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=wakarimi-authentication-db
       - POSTGRES_USER=user
