@@ -30,9 +30,7 @@ services:
       - APP_LOGGING_LEVEL=DEBUG
       - APP_REFRESH_KEY=key1
       - APP_ACCESS_KEY=key2
-      # - APP_NAME=wakarimi-authentication
       # - APP_LOGGING_LEVEL=INFO # TRACE, DEBUG, INFO, WARN, ERROR, FATAL
-      # - APP_VERSION=v1
       # - HTTP_PORT=8020
       - DB_HOST=database
       - DB_PORT=5432

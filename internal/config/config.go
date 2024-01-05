@@ -7,10 +7,7 @@ import (
 )
 
 type AppConfig struct {
-	Name             string
-	Env              string
 	LoggingLevel     zerolog.Level
-	Version          string
 	RefreshSecretKey string
 	AccessSecretKey  string
 }
@@ -39,9 +36,7 @@ type Config struct {
 }
 
 func New() (config Config, err error) {
-	viper.SetDefault("APP_NAME", "wakarimi-authentication")
 	viper.SetDefault("APP_LOGGING_LEVEL", "INFO")
-	viper.SetDefault("APP_VERSION", "v1")
 	viper.SetDefault("HTTP_PORT", 8020)
 	viper.SetDefault("DB_READ_TIMEOUT", "1s")
 	viper.SetDefault("DB_WRITE_TIMEOUT", "1s")
@@ -51,8 +46,6 @@ func New() (config Config, err error) {
 
 	config = Config{
 		App: AppConfig{
-			Name:             viper.GetString("APP_NAME"),
-			Version:          viper.GetString("APP_VERSION"),
 			LoggingLevel:     parseLoggingLevel(viper.GetString("APP_LOGGING_LEVEL")),
 			RefreshSecretKey: viper.GetString("APP_REFRESH_KEY"),
 			AccessSecretKey:  viper.GetString("APP_ACCESS_KEY"),
